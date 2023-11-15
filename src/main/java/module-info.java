@@ -5,4 +5,6 @@ module com.carrot.catatrack {
 
     opens com.carrot.catatrack to javafx.fxml;
     exports com.carrot.catatrack;
+    exports com.carrot.catatrack.controller;
+    opens com.carrot.catatrack.controller to javafx.fxml;
 }
