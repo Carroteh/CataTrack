@@ -34,7 +34,7 @@ public class MenuController
     @javafx.fxml.FXML
     public void goToPatient(ActionEvent actionEvent) throws IOException {
         stage = (Stage) root.getScene().getWindow();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/add-patient-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/addPatient-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setScene(scene);
     }

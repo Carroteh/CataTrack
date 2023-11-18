@@ -1,0 +1,63 @@
+.hbox-group {
+    -fx-min-height: 100;
+    -fx-min-width: 200;
+    -fx-spacing: 10;
+    -fx-fill-height: true;
+    -fx-background: rgb(225,228,203);
+}
+
+.button {
+    -fx-color: rgb(225,228,203);
+}
+
+.root {
+    -fx-font-size: 13;
+}
+
+.label {
+    -fx-pref-width: 65;
+}
+
+.text-field {
+    -fx-pref-width: 150;
+}
+
+.date-picker {
+    -fx-pref-width: 150;
+}
+
+.choice-box {
+    -fx-pref-width: 150;
+}
+
+#patientVBox {
+    -fx-pref-width: 881;
+    -fx-pref-height: 390;
+    -fx-padding: 10,10,10,10;
+
+}
+
+#Response {
+    -fx-pref-width: 150;
+}
+
+#GridPane {
+    -fx-hgap: 20;
+    -fx-vgap: 10;
+    -fx-padding: 10,0,10,0;
+}
+
+#EyeGrid {
+    -fx-hgap: 200;
+    -fx-vgap: 10;
+    -fx-padding: 10,0,10,0;
+}
+
+#SaveButton {
+    -fx-pref-width: 215;
+}
+
+#SurgNotes {
+    -fx-pref-width: 336;
+    -fx-pref-height: 62;
+}

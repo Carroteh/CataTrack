@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="root" prefHeight="500.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carrot.catatrack.controller.AddPatientController">
+   <children>
+      <VBox layoutY="-6.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="Menu">
+                  <items>
+                    <MenuItem fx:id="itmSearch" mnemonicParsing="false" onAction="#goToSearch" text="Search" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <SplitPane dividerPositions="0.33856502242152464" orientation="VERTICAL">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0">
+                     <children>
+                        <GridPane hgap="10.0" layoutY="-7.0" vgap="10.0" AnchorPane.rightAnchor="0.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="NEVER" maxWidth="201.0" minWidth="10.0" prefWidth="80.0" />
+                              <ColumnConstraints hgrow="NEVER" maxWidth="366.0" minWidth="10.0" prefWidth="150.0" />
+                              <ColumnConstraints hgrow="NEVER" maxWidth="420.0" minWidth="0.0" prefWidth="50.0" />
+                              <ColumnConstraints hgrow="NEVER" maxWidth="535.0" minWidth="10.0" prefWidth="80.0" />
+                              <ColumnConstraints hgrow="NEVER" maxWidth="480.0" minWidth="10.0" prefWidth="150.0" />
+                            <ColumnConstraints hgrow="NEVER" maxWidth="605.0" minWidth="10.0" prefWidth="50.0" />
+                              <ColumnConstraints hgrow="NEVER" maxWidth="1056.0" minWidth="10.0" prefWidth="80.0" />
+                              <ColumnConstraints hgrow="NEVER" maxWidth="1246.0" minWidth="10.0" prefWidth="150.0" />
+                              <ColumnConstraints hgrow="NEVER" maxWidth="1246.0" minWidth="10.0" prefWidth="27.0" />
+                              <ColumnConstraints hgrow="NEVER" maxWidth="1246.0" minWidth="10.0" prefWidth="170.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Surname:" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font></Label>
+                              <Label text="Initials:" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font></Label>
+                              <Label text="ID:" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font></Label>
+                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                              <Label text="Birthdate:" GridPane.columnIndex="6" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font></Label>
+                              <DatePicker prefHeight="25.0" prefWidth="214.0" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                              <Label text="Status:" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font></Label>
+                              <ChoiceBox prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                              <Label text="General">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Button mnemonicParsing="false" prefHeight="66.0" prefWidth="150.0" text="ADD" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                              <Label text="Status:" GridPane.columnIndex="9" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font></Label>
+                              <Label text="-" GridPane.columnIndex="9" GridPane.rowIndex="2" />
+                           </children>
+                           <padding>
+                              <Insets bottom="20.0" left="70.0" right="50.0" top="20.0" />
+                           </padding>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="321.0" prefWidth="1198.0">
+                     <children>
+                        <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                 <children>
+                                    <GridPane hgap="10.0" prefHeight="290.0" prefWidth="595.0" vgap="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="NEVER" maxWidth="223.0" minWidth="0.0" prefWidth="95.0" />
+                                          <ColumnConstraints hgrow="NEVER" maxWidth="456.0" minWidth="10.0" prefWidth="112.0" />
+                                          <ColumnConstraints hgrow="NEVER" maxWidth="716.0" minWidth="5.0" prefWidth="107.0" />
+                                          <ColumnConstraints hgrow="NEVER" maxWidth="833.0" minWidth="0.0" prefWidth="200.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label text="OS">
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <Label text="VA" GridPane.rowIndex="1">
+                                             <font>
+                                                <Font name="System Bold" size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label text="Final:" GridPane.rowIndex="6">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="6 Weeks:" GridPane.rowIndex="5">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="2 Weeks:" GridPane.rowIndex="4">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="Postop:" GridPane.rowIndex="3">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="Initial:" GridPane.rowIndex="2">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <ChoiceBox prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <ChoiceBox prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <ChoiceBox prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <ChoiceBox prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <ChoiceBox prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                          <Label text="Date:" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="Type:" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="Place:" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="Notes:" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <DatePicker prefHeight="25.0" prefWidth="207.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                          <ChoiceBox prefHeight="25.0" prefWidth="207.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                          <TextField GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                          <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="5" GridPane.rowSpan="2" />
+                                          <Label text="Surgery:" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                             <font>
+                                                <Font name="System Bold" size="14.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="10.0" left="25.0" right="10.0" top="10.0" />
+                                       </padding>
+                                    </GridPane>
+                                 </children>
+                              </AnchorPane>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                 <children>
+                                    <GridPane hgap="10.0" vgap="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <Label text="OD">
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <Label text="VA" GridPane.rowIndex="1">
+                                             <font>
+                                                <Font name="System Bold" size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label text="Final:" GridPane.rowIndex="6">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="6 Weeks:" GridPane.rowIndex="5">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="2 Weeks:" GridPane.rowIndex="4">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="Postop:" GridPane.rowIndex="3">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="Initial:" GridPane.rowIndex="2">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <ChoiceBox prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <ChoiceBox prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <ChoiceBox prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <ChoiceBox prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <ChoiceBox prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                          <Label text="Date:" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="Type:" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="Place:" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <Label text="Notes:" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font></Label>
+                                          <DatePicker prefHeight="25.0" prefWidth="207.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                          <ChoiceBox prefHeight="25.0" prefWidth="207.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                          <TextField GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                          <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="5" GridPane.rowSpan="2" />
+                                          <Label text="Surgery:" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                             <font>
+                                                <Font name="System Bold" size="14.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="NEVER" maxWidth="223.0" minWidth="0.0" prefWidth="95.0" />
+                                          <ColumnConstraints hgrow="NEVER" maxWidth="456.0" minWidth="10.0" prefWidth="112.0" />
+                                          <ColumnConstraints hgrow="NEVER" maxWidth="716.0" minWidth="5.0" prefWidth="107.0" />
+                                          <ColumnConstraints hgrow="NEVER" maxWidth="833.0" minWidth="0.0" prefWidth="200.0" />
+                                       </columnConstraints>
+                                       <padding>
+                                          <Insets bottom="10.0" left="25.0" right="10.0" top="10.0" />
+                                       </padding>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                       </rowConstraints>
+                                    </GridPane>
+                                 </children>
+                              </AnchorPane>
+                          </items>
+                        </SplitPane>
+                     </children>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
