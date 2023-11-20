@@ -42,7 +42,7 @@
 }
 
 #GridPane {
-    -fx-hgap: 20;
+    -fx-hgap: 100;
     -fx-vgap: 10;
     -fx-padding: 10,0,10,0;
 }
@@ -54,7 +54,7 @@
 }
 
 #SaveButton {
-    -fx-pref-width: 215;
+    -fx-pref-width: 210;
 }
 
 #SurgNotes {
