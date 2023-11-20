@@ -41,7 +41,6 @@ public class Main extends Application {
         URL stylesheet = getClass().getResource("/com/carrot/catatrack/styles.css");
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add(String.valueOf(stylesheet));
-        System.out.println(stylesheet);
         stage.setTitle("CataTrack");
         stage.setScene(scene);
         stage.setMaxWidth(1200);

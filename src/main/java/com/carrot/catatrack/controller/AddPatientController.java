@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class AddPatientController implements Choices
 {
@@ -71,13 +72,13 @@ public class AddPatientController implements Choices
     @javafx.fxml.FXML
     private TextField txtAltContact;
     @javafx.fxml.FXML
-    private ChoiceBox chLens_OD;
+    private ChoiceBox<String> chLens_OD;
     @javafx.fxml.FXML
-    private ChoiceBox chLens_OS;
+    private ChoiceBox<String> chLens_OS;
 
     @javafx.fxml.FXML
     public void initialize() {
-        //Setup choice boxes
+        //Setup Choice box options
         setupVAChoiceBoxes(chInitialVA_OD, chPostopVA_OD, ch2WeekVA_OD, ch6WeekVA_OD, chFinalVA_OD);
         setupVAChoiceBoxes(chInitialVA_OS, chPostopVA_OS, ch2WeekVA_OS, ch6WeekVA_OS, chFinalVA_OS);
 
@@ -85,6 +86,9 @@ public class AddPatientController implements Choices
 
         chSurgType_OD.setItems(FXCollections.observableArrayList(Choices.surgeryType));
         chSurgType_OS.setItems(FXCollections.observableArrayList(Choices.surgeryType));
+
+        chLens_OD.setItems(FXCollections.observableArrayList(Choices.Lens));
+        chLens_OS.setItems(FXCollections.observableArrayList(Choices.Lens));
     }
 
     private void setupVAChoiceBoxes(ChoiceBox<String> chInitialVAOd, ChoiceBox<String> chPostopVAOd, ChoiceBox<String> ch2WeekVAOd, ChoiceBox<String> ch6WeekVAOd, ChoiceBox<String> chFinalVAOd) {
@@ -99,7 +103,9 @@ public class AddPatientController implements Choices
     public void goToSearch(ActionEvent actionEvent) throws IOException {
         stage = (Stage) root.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/search-view.fxml"));
+        URL stylesheet = getClass().getResource("/com/carrot/catatrack/styles.css");
         Scene scene = new Scene(fxmlLoader.load());
+        scene.getStylesheets().add(String.valueOf(stylesheet));
         stage.setScene(scene);
     }
 
