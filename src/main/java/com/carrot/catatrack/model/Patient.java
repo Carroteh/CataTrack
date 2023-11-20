@@ -10,7 +10,7 @@ import java.sql.Date;
 public class Patient {
 
     private int patient_id;
-    private int id_num;
+    private String id_num;
     private String surname;
     private String initials;
     private Date dob;
@@ -20,7 +20,38 @@ public class Patient {
 
     public Patient() {}
 
-    public Patient(int patient_id, int id_num, String surname, String initials, Date dob, String status, String contact, String alt_contact) {
+    /**
+     * Partial constructor for the Patient
+     * @param id_num the patient ID number
+     * @param surname the patient surname
+     * @param initials the patient Initials
+     * @param dob the patient date of birth
+     * @param status the patient status
+     * @param contact the patient primary contact number
+     * @param alt_contact the patient alternate contact number
+     */
+    public Patient(String id_num, String surname, String initials, Date dob, String status, String contact, String alt_contact) {
+        this.id_num = id_num;
+        this.surname = surname;
+        this.initials = initials;
+        this.dob = dob;
+        this.status = status;
+        this.contact = contact;
+        this.alt_contact = alt_contact;
+    }
+
+    /**
+     * Fully parameterised constructor for the Patient
+     * @param patient_id the patient ID (primary key)
+     * @param id_num the patient ID number
+     * @param surname the patient surname
+     * @param initials the patient Initials
+     * @param dob the patient date of birth
+     * @param status the patient status
+     * @param contact the patient primary contact number
+     * @param alt_contact the patient alternate contact number
+     */
+    public Patient(int patient_id, String id_num, String surname, String initials, Date dob, String status, String contact, String alt_contact) {
         this.patient_id = patient_id;
         this.id_num = id_num;
         this.surname = surname;
@@ -39,11 +70,11 @@ public class Patient {
         this.patient_id = patient_id;
     }
 
-    public int getId_num() {
+    public String getId_num() {
         return id_num;
     }
 
-    public void setId_num(int id_num) {
+    public void setId_num(String id_num) {
         this.id_num = id_num;
     }
 

@@ -1,6 +1,9 @@
 package com.carrot.catatrack.controller;
 
+import com.carrot.catatrack.db.DatabaseService;
 import com.carrot.catatrack.model.Choices;
+import com.carrot.catatrack.model.Eye;
+import com.carrot.catatrack.model.Patient;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +14,14 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import java.time.LocalDate;
 
+/**
+ * @author Philip Mathee
+ * @version 1.0
+ * Add Patient controller
+ */
 public class AddPatientController implements Choices
 {
     @javafx.fxml.FXML
@@ -41,8 +51,6 @@ public class AddPatientController implements Choices
     private ChoiceBox<String> ch6WeekVA_OS;
     @javafx.fxml.FXML
     private ChoiceBox<String> chFinalVA_OS;
-    @javafx.fxml.FXML
-    private DatePicker dateSurgOS;
     @javafx.fxml.FXML
     private ChoiceBox<String> chSurgType_OS;
     @javafx.fxml.FXML
@@ -75,6 +83,10 @@ public class AddPatientController implements Choices
     private ChoiceBox<String> chLens_OD;
     @javafx.fxml.FXML
     private ChoiceBox<String> chLens_OS;
+    @javafx.fxml.FXML
+    private DatePicker dateSurg_OS;
+    @javafx.fxml.FXML
+    private Label lblStatus;
 
     @javafx.fxml.FXML
     public void initialize() {
@@ -83,24 +95,35 @@ public class AddPatientController implements Choices
         setupVAChoiceBoxes(chInitialVA_OS, chPostopVA_OS, ch2WeekVA_OS, ch6WeekVA_OS, chFinalVA_OS);
 
         chStatus.setItems(FXCollections.observableArrayList(Choices.status));
+        chStatus.setValue("N/A");
 
         chSurgType_OD.setItems(FXCollections.observableArrayList(Choices.surgeryType));
+        chSurgType_OD.setValue("N/A");
         chSurgType_OS.setItems(FXCollections.observableArrayList(Choices.surgeryType));
+        chSurgType_OS.setValue("N/A");
 
         chLens_OD.setItems(FXCollections.observableArrayList(Choices.Lens));
+        chLens_OD.setValue("N/A");
         chLens_OS.setItems(FXCollections.observableArrayList(Choices.Lens));
+        chLens_OS.setValue("N/A");
     }
 
     private void setupVAChoiceBoxes(ChoiceBox<String> chInitialVAOd, ChoiceBox<String> chPostopVAOd, ChoiceBox<String> ch2WeekVAOd, ChoiceBox<String> ch6WeekVAOd, ChoiceBox<String> chFinalVAOd) {
         chInitialVAOd.setItems(FXCollections.observableArrayList(Choices.VAList));
+        chInitialVAOd.setValue("N/A");
         chPostopVAOd.setItems(FXCollections.observableArrayList(Choices.VAList));
+        chPostopVAOd.setValue("N/A");
         ch2WeekVAOd.setItems(FXCollections.observableArrayList(Choices.VAList));
+        ch2WeekVAOd.setValue("N/A");
         ch6WeekVAOd.setItems(FXCollections.observableArrayList(Choices.VAList));
+        ch6WeekVAOd.setValue("N/A");
         chFinalVAOd.setItems(FXCollections.observableArrayList(Choices.VAList));
+        chFinalVAOd.setValue("N/A");
     }
 
     @javafx.fxml.FXML
     public void goToSearch(ActionEvent actionEvent) throws IOException {
+        //Change scene to Search view
         stage = (Stage) root.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/search-view.fxml"));
         URL stylesheet = getClass().getResource("/com/carrot/catatrack/styles.css");
@@ -111,6 +134,48 @@ public class AddPatientController implements Choices
 
     @javafx.fxml.FXML
     public void AddPatient(ActionEvent actionEvent) {
+        DatabaseService db = new DatabaseService();
 
+        //Create new Patient
+        LocalDate BirthDate = dateBirth.getValue() == null ? LocalDate.of(1000,1,1) : dateBirth.getValue();
+
+        Patient patient = new Patient(txtID.getText(), txtSurname.getText(), txtInitials.getText(),
+                                        Date.valueOf(BirthDate), chStatus.getValue(), txtContact.getText(),
+                                        txtAltContact.getText());
+
+        //Insert patient into Database
+        int patientID = db.insertPatient(patient);
+
+        if(patientID != -1) {
+            //Create and insert Right and Left eye
+           LocalDate surgDateOD = dateSurg_OD.getValue() == null ? LocalDate.of(1000,1,1) : dateSurg_OD.getValue();
+            Eye rightEye = new Eye(patientID, 'R', chLens_OD.getValue(), chInitialVA_OD.getValue(), chPostopVA_OD.getValue(),
+                    ch2WeekVA_OD.getValue(), ch6WeekVA_OD.getValue(), txtSurgPlace_OD.getText(), Date.valueOf(surgDateOD),
+                    chSurgType_OD.getValue(),txtSurgNotes_OD.getText());
+
+            int rCode = db.insertEye(rightEye);
+
+            LocalDate surgDateOS = dateSurg_OS.getValue() == null ? LocalDate.of(1000,1,1) : dateSurg_OS.getValue();
+            Eye leftEye = new Eye(patientID, 'L', chLens_OS.getValue(), chInitialVA_OS.getValue(), chPostopVA_OS.getValue(),
+                    ch2WeekVA_OS.getValue(), ch6WeekVA_OS.getValue(), txtSurgPlace_OS.getText(), Date.valueOf(surgDateOS),
+                    chSurgType_OS.getValue(),txtSurgNotes_OS.getText());
+
+
+            int lCode = db.insertEye(leftEye);
+
+            //Display useful response message
+            if(rCode == -1) {
+                lblStatus.setText("Error Right Eye.");
+            }
+            else if(lCode == -1) {
+                lblStatus.setText("Error Left Eye.");
+            }
+            else {
+                lblStatus.setText("Success!");
+            }
+        }
+        else {
+            lblStatus.setText("Something went wrong.");
+        }
     }
 }

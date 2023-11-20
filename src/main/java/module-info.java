@@ -2,6 +2,7 @@ module com.carrot.catatrack {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
+    requires org.xerial.sqlitejdbc;
 
 
     opens com.carrot.catatrack to javafx.fxml;

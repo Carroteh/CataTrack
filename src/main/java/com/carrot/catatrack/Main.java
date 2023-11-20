@@ -20,23 +20,6 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        URL url = getClass().getResource("/com/carrot/catatrack/catatrack.db");
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e1) {
-            e1.printStackTrace();
-        }
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + url)) {
-            if (conn != null) {
-                DatabaseMetaData meta = conn.getMetaData();
-                System.out.println("The driver name is " + meta.getDriverName());
-                System.out.println("connection to DB successful");
-            }
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("search-view.fxml"));
         URL stylesheet = getClass().getResource("/com/carrot/catatrack/styles.css");
         Scene scene = new Scene(fxmlLoader.load());
