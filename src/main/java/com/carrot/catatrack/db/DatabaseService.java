@@ -26,7 +26,7 @@ public class DatabaseService {
     private Connection connect() {
         //URL to database
         URL url = getClass().getResource("/com/carrot/catatrack/catatrack.db");
-
+        System.out.println(url);
         Connection conn = null;
         try {
             conn = DriverManager.getConnection("jdbc:sqlite:" + url);
@@ -105,7 +105,6 @@ public class DatabaseService {
             PK = -1;
             System.err.println(ex.getMessage());
         }
-
 
         return PK;
     }

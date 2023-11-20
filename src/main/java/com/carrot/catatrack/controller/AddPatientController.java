@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author Philip Mathee
@@ -137,10 +138,10 @@ public class AddPatientController implements Choices
         DatabaseService db = new DatabaseService();
 
         //Create new Patient
-        LocalDate BirthDate = dateBirth.getValue() == null ? LocalDate.of(1000,1,1) : dateBirth.getValue();
+        LocalDate birthDate = getDate(dateBirth);
 
         Patient patient = new Patient(txtID.getText(), txtSurname.getText(), txtInitials.getText(),
-                                        Date.valueOf(BirthDate), chStatus.getValue(), txtContact.getText(),
+                                        Date.valueOf(birthDate), chStatus.getValue(), txtContact.getText(),
                                         txtAltContact.getText());
 
         //Insert patient into Database
@@ -148,14 +149,15 @@ public class AddPatientController implements Choices
 
         if(patientID != -1) {
             //Create and insert Right and Left eye
-           LocalDate surgDateOD = dateSurg_OD.getValue() == null ? LocalDate.of(1000,1,1) : dateSurg_OD.getValue();
+
+            LocalDate surgDateOD = getDate(dateSurg_OD);
             Eye rightEye = new Eye(patientID, 'R', chLens_OD.getValue(), chInitialVA_OD.getValue(), chPostopVA_OD.getValue(),
                     ch2WeekVA_OD.getValue(), ch6WeekVA_OD.getValue(), txtSurgPlace_OD.getText(), Date.valueOf(surgDateOD),
                     chSurgType_OD.getValue(),txtSurgNotes_OD.getText());
 
             int rCode = db.insertEye(rightEye);
 
-            LocalDate surgDateOS = dateSurg_OS.getValue() == null ? LocalDate.of(1000,1,1) : dateSurg_OS.getValue();
+            LocalDate surgDateOS = getDate(dateSurg_OS);
             Eye leftEye = new Eye(patientID, 'L', chLens_OS.getValue(), chInitialVA_OS.getValue(), chPostopVA_OS.getValue(),
                     ch2WeekVA_OS.getValue(), ch6WeekVA_OS.getValue(), txtSurgPlace_OS.getText(), Date.valueOf(surgDateOS),
                     chSurgType_OS.getValue(),txtSurgNotes_OS.getText());
@@ -177,5 +179,20 @@ public class AddPatientController implements Choices
         else {
             lblStatus.setText("Something went wrong.");
         }
+    }
+
+    private LocalDate getDate(DatePicker dateSurgOd) {
+        LocalDate returnDate;
+        if(dateSurgOd.getValue() == null && dateSurgOd.getEditor().getText().equals("")) {
+            returnDate = LocalDate.of(1000,1,1);
+        }
+        else if(dateSurgOd.getValue() == null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            returnDate = LocalDate.parse(dateSurgOd.getEditor().getText(), formatter);
+        }
+        else {
+            returnDate = dateSurgOd.getValue();
+        }
+        return returnDate;
     }
 }
