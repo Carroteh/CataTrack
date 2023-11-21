@@ -6,10 +6,112 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.w3c.dom.Text;
+
+import java.time.LocalDate;
 
 public class PatientPane extends TitledPane {
 
-    public PatientPane(Patient patient) {
+    //GENERAL
+    private Patient patient;
+    private Eye rightEye;
+    private Eye leftEye;
+    private Button btnSave;
+    private TextField txtSurname;
+    private TextField txtID;
+    private TextField txtInitials;
+    private TextField txtContact;
+    private TextField txtAltContact;
+    private DatePicker dateBirth;
+    private ChoiceBox<String> chStatus;
+    private Label lblResponse;
+
+    //RIGHT EYE
+    private ChoiceBox<String> chLens_OD;
+    private ChoiceBox<String> chInitialVA_OD;
+    private ChoiceBox<String> chPostopVA_OD;
+    private ChoiceBox<String> ch2WeeksVA_OD;
+    private ChoiceBox<String> ch6WeeksVA_OD;
+    private ChoiceBox<String> chFinalVA_OD;
+    private DatePicker dateSurg_OD;
+    private ChoiceBox<String> chSurgType_OD;
+    private TextField txtSurgPlace_OD;
+    private TextArea txtSurgNotes_OD;
+
+    //LEFT EYE
+    private ChoiceBox<String> chLens_OS;
+    private ChoiceBox<String> chInitialVA_OS;
+    private ChoiceBox<String> chPostopVA_OS;
+    private ChoiceBox<String> ch2WeeksVA_OS;
+    private ChoiceBox<String> ch6WeeksVA_OS;
+    private ChoiceBox<String> chFinalVA_OS;
+    private DatePicker dateSurg_OS;
+    private ChoiceBox<String> chSurgType_OS;
+    private TextField txtSurgPlace_OS;
+    private TextArea txtSurgNotes_OS;
+
+
+    public PatientPane(Patient patient, Eye rightEye, Eye leftEye) {
+        this.rightEye = rightEye;
+        this.leftEye = leftEye;
+        this.patient = patient;
+        setupControls();
+        setControlValues();
+        setOnAction();
+    }
+
+    private void setResponse(String response) {
+        lblResponse.setText(response);
+    }
+
+    //TODO setonaction
+    private void setOnAction() {
+        btnSave.setOnAction(e -> {
+
+        });
+    }
+
+    private void setControlValues() {
+        //General
+        txtSurname.setText(patient.getSurname());
+        txtID.setText(patient.getId_num());
+        txtInitials.setText(patient.getInitials());
+        dateBirth.setValue(patient.getDob().toLocalDate());
+        txtContact.setText(patient.getContact());
+        txtAltContact.setText(patient.getAlt_contact());
+        chStatus.setValue(patient.getStatus());
+
+        //OD
+        chLens_OD.setValue(rightEye.getLens());
+        chInitialVA_OD.setValue(rightEye.getVa_init());
+        chPostopVA_OD.setValue(rightEye.getVa_postop());
+        ch2WeeksVA_OD.setValue(rightEye.getVa_2weeks());
+        ch6WeeksVA_OD.setValue(rightEye.getVa_6weeks());
+        chFinalVA_OD.setValue(rightEye.getVa_final());
+
+        dateSurg_OD.setValue(rightEye.getSurg_date().toLocalDate());
+        chSurgType_OD.setValue(rightEye.getSurg_type());
+        txtSurgPlace_OD.setText(rightEye.getSurg_place());
+        txtSurgNotes_OD.setText(rightEye.getSurg_notes());
+
+        //OS
+        chLens_OS.setValue(leftEye.getLens());
+        chInitialVA_OS.setValue(leftEye.getVa_init());
+        chPostopVA_OS.setValue(leftEye.getVa_postop());
+        ch2WeeksVA_OS.setValue(leftEye.getVa_2weeks());
+        ch6WeeksVA_OS.setValue(leftEye.getVa_6weeks());
+        chFinalVA_OS.setValue(leftEye.getVa_final());
+
+        dateSurg_OS.setValue(leftEye.getSurg_date().toLocalDate());
+        chSurgType_OS.setValue(leftEye.getSurg_type());
+        txtSurgPlace_OS.setText(leftEye.getSurg_place());
+        txtSurgNotes_OS.setText(leftEye.getSurg_notes());
+
+        this.setText(patient.getSurname() + " " + patient.getInitials() + ", " + patient.getContact() + ", "
+                        + patient.getDob() + ", " + rightEye.getVa_final() + " | " + leftEye.getVa_final());
+    }
+
+    private void setupControls() {
         VBox vBox = new VBox();
         vBox.setId("patientVBox");
 
@@ -30,16 +132,16 @@ public class PatientPane extends TitledPane {
         Accordion eyeAccordion = new Accordion();
 
         //General info controls
-        TextField txtSurname = new TextField();
-        TextField txtInitials = new TextField();
-        TextField txtID = new TextField();
-        TextField txtContact = new TextField();
-        TextField txtAltContact = new TextField();
-        DatePicker dateBirth = new DatePicker();
-        ChoiceBox<String> chStatus = new ChoiceBox<>(FXCollections.observableArrayList(Choices.status));
-        Label lblResponse = new Label("");
+        txtSurname = new TextField();
+        txtInitials = new TextField();
+        txtID = new TextField();
+        txtContact = new TextField();
+        txtAltContact = new TextField();
+        dateBirth = new DatePicker();
+        chStatus = new ChoiceBox<>(FXCollections.observableArrayList(Choices.status));
+        lblResponse = new Label("");
         lblResponse.setId("Response");
-        Button btnSave = new Button("Save");
+        btnSave = new Button("Save");
         btnSave.setId("SaveButton");
 
         //Setup general info
@@ -57,57 +159,57 @@ public class PatientPane extends TitledPane {
         vBox.getChildren().add(genGrid);
 
         //OD and OS controls
-        ChoiceBox<String> chInitialVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
-        ChoiceBox<String> chPostOpVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
-        ChoiceBox<String> ch2WeeksVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
-        ChoiceBox<String> ch6WeeksVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
-        ChoiceBox<String> chFinalVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
+        chInitialVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
+        chPostopVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
+        ch2WeeksVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
+        ch6WeeksVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
+        chFinalVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
 
-        ChoiceBox<String> chInitialVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
-        ChoiceBox<String> chPostOpVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
-        ChoiceBox<String> ch2WeeksVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
-        ChoiceBox<String> ch6WeeksVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
-        ChoiceBox<String> chFinalVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
+        chInitialVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
+        chPostopVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
+        ch2WeeksVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
+        ch6WeeksVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
+        chFinalVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
 
-        DatePicker dateSurg_OD = new DatePicker();
-        DatePicker dateSurg_OS = new DatePicker();
-        ChoiceBox<String> chTypeSurg_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.surgeryType));
-        ChoiceBox<String> chTypeSurg_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.surgeryType));
-        TextField txtPlace_OD = new TextField();
-        TextField txtPlace_OS = new TextField();
-        TextArea txtNotes_OD = new TextArea();
-        ChoiceBox<String> chLens_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.Lens));
-        ChoiceBox<String> chLens_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.Lens));
-        txtNotes_OD.setId("SurgNotes");
-        TextArea txtNotes_OS = new TextArea();
-        txtNotes_OS.setId("SurgNotes");
+        dateSurg_OD = new DatePicker();
+        dateSurg_OS = new DatePicker();
+        chSurgType_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.surgeryType));
+        chSurgType_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.surgeryType));
+        txtSurgPlace_OD = new TextField();
+        txtSurgPlace_OS = new TextField();
+        txtSurgNotes_OD = new TextArea();
+        txtSurgNotes_OS = new TextArea();
+        chLens_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.Lens));
+        chLens_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.Lens));
+        txtSurgNotes_OD.setId("SurgNotes");
+        txtSurgNotes_OS.setId("SurgNotes");
 
         //OS and OD grids
         ODGrid.add(new HBox(new Label("Lens:"),chLens_OD),0,0);
         ODGrid.add(new Label("VA"), 0,1);
         ODGrid.add(new HBox(new Label("Initial:"), chInitialVA_OD),0,2);
-        ODGrid.add(new HBox(new Label("Postop:") , chPostOpVA_OD),0,3);
+        ODGrid.add(new HBox(new Label("Postop:") , chPostopVA_OD),0,3);
         ODGrid.add(new HBox(new Label("2 Weeks:") , ch2WeeksVA_OD),0,4);
         ODGrid.add(new HBox(new Label("6 Weeks:") , ch6WeeksVA_OD),0,5);
         ODGrid.add(new HBox(new Label("Final:") , chFinalVA_OD),0,6);
         ODGrid.add(new Label("Surgery"),1,1);
         ODGrid.add(new HBox(new Label("Date") , dateSurg_OD),1,2);
-        ODGrid.add(new HBox(new Label("Type:") , chTypeSurg_OD),1,3);
-        ODGrid.add(new HBox(new Label("Place:") , txtPlace_OD),1,4);
-        ODGrid.add(new HBox(new Label("Notes:") , txtNotes_OD),1,5, 1,2);
+        ODGrid.add(new HBox(new Label("Type:") , chSurgType_OD),1,3);
+        ODGrid.add(new HBox(new Label("Place:") , txtSurgPlace_OD),1,4);
+        ODGrid.add(new HBox(new Label("Notes:") , txtSurgNotes_OD),1,5, 1,2);
 
         OSGrid.add(new HBox(new Label("Lens:"),chLens_OS),0,0);
         OSGrid.add(new Label("VA"), 0,1);
         OSGrid.add(new HBox(new Label("Initial:"), chInitialVA_OS),0,2);
-        OSGrid.add(new HBox(new Label("Postop:") , chPostOpVA_OS),0,3);
+        OSGrid.add(new HBox(new Label("Postop:") , chPostopVA_OS),0,3);
         OSGrid.add(new HBox(new Label("2 Weeks:") , ch2WeeksVA_OS),0,4);
         OSGrid.add(new HBox(new Label("6 Weeks:") , ch6WeeksVA_OS),0,5);
         OSGrid.add(new HBox(new Label("Final:") , chFinalVA_OS),0,6);
         OSGrid.add(new Label("Surgery"),1,1);
         OSGrid.add(new HBox(new Label("Date") , dateSurg_OS),1,2);
-        OSGrid.add(new HBox(new Label("Type:") , chTypeSurg_OS),1,3);
-        OSGrid.add(new HBox(new Label("Place:") , txtPlace_OS),1,4);
-        OSGrid.add(new HBox(new Label("Notes:") , txtNotes_OS),1,5, 1,2);
+        OSGrid.add(new HBox(new Label("Type:") , chSurgType_OS),1,3);
+        OSGrid.add(new HBox(new Label("Place:") , txtSurgPlace_OS),1,4);
+        OSGrid.add(new HBox(new Label("Notes:") , txtSurgNotes_OS),1,5, 1,2);
 
         ODAnchor.getChildren().add(ODGrid);
         OSAnchor.getChildren().add(OSGrid);
@@ -125,7 +227,5 @@ public class PatientPane extends TitledPane {
         mainAnchor.getChildren().add(vBox);
 
         this.setContent(mainAnchor);
-
-        this.setText("Surname, IN, +27 38473787, 6/12 | 6/12, 1980/02/01");
     }
 }

@@ -25,7 +25,7 @@ public class DatabaseService {
      */
     private Connection connect() {
         //URL to database
-        URL url = getClass().getResource("/com/carrot/catatrack/catatrack.db");
+        URL url = getClass().getResource("/com/carrot/catatrack/db/catatrack.db");
         System.out.println(url);
         Connection conn = null;
         try {

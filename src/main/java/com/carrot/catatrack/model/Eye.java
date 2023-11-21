@@ -32,6 +32,7 @@ public class Eye {
      * @param va_postop the visual acuity post surgery
      * @param va_2weeks visual acuity 2 weeks after surgery
      * @param va_6weeks visual acuity 6 weeks after surgery
+     * @param surg_place location that the surgery took place
      * @param surg_date date of the surgery
      * @param surg_type type of surgery
      * @param surg_notes notes related to the surgery
@@ -60,26 +61,29 @@ public class Eye {
      * @return the final VA
      */
     private String determineFinalVA(String init, String postop, String week2, String week6) {
-        String finalVA = "";
 
         //Check for the latest available VA
         if(week6 != null) {
-            finalVA = week6;
+            if(!week6.equals("")) {
+                return  week6;
+            }
         }
-        else if(week2 != null) {
-            finalVA = week2;
+        if(week2 != null) {
+            if(!week2.equals("")) {
+                return week2;
+            }
         }
-        else if(postop != null) {
-            finalVA = postop;
+        if(postop != null) {
+            if(!postop.equals("")) {
+                return postop;
+            }
         }
-        else if(init != null) {
-            finalVA = init;
+        if(init != null) {
+            if(!init.equals("")) {
+                return init;
+            }
         }
-        else {
-            finalVA = "";
-        }
-
-        return finalVA;
+        return "";
     }
 
     public int getPatient_id() {

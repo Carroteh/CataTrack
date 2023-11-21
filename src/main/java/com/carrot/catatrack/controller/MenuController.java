@@ -26,7 +26,7 @@ public class MenuController
     @javafx.fxml.FXML
     public void goToSearch(ActionEvent actionEvent) throws IOException {
         stage = (Stage) root.getScene().getWindow();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/search-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/views/searchView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setScene(scene);
     }
@@ -34,7 +34,7 @@ public class MenuController
     @javafx.fxml.FXML
     public void goToPatient(ActionEvent actionEvent) throws IOException {
         stage = (Stage) root.getScene().getWindow();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/addPatient-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/views/addPatientView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setScene(scene);
     }

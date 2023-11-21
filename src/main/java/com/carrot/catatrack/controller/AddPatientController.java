@@ -126,8 +126,8 @@ public class AddPatientController implements Choices
     public void goToSearch(ActionEvent actionEvent) throws IOException {
         //Change scene to Search view
         stage = (Stage) root.getScene().getWindow();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/search-view.fxml"));
-        URL stylesheet = getClass().getResource("/com/carrot/catatrack/styles.css");
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/views/searchView.fxml"));
+        URL stylesheet = getClass().getResource("/com/carrot/catatrack/styles/styles.css");
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add(String.valueOf(stylesheet));
         stage.setScene(scene);
@@ -148,8 +148,8 @@ public class AddPatientController implements Choices
         int patientID = db.insertPatient(patient);
 
         if(patientID != -1) {
-            //Create and insert Right and Left eye
 
+            //Create and insert Right and Left eye
             LocalDate surgDateOD = getDate(dateSurg_OD);
             Eye rightEye = new Eye(patientID, 'R', chLens_OD.getValue(), chInitialVA_OD.getValue(), chPostopVA_OD.getValue(),
                     ch2WeekVA_OD.getValue(), ch6WeekVA_OD.getValue(), txtSurgPlace_OD.getText(), Date.valueOf(surgDateOD),
@@ -181,15 +181,23 @@ public class AddPatientController implements Choices
         }
     }
 
+    /**
+     * Function that extracts the date from a datePicker
+     * @param dateSurgOd the DatePicker
+     * @return A LocalDate from the DatePicker, "1000/01/01" if no date was entered
+     */
     private LocalDate getDate(DatePicker dateSurgOd) {
         LocalDate returnDate;
+        //Check if no date was entered
         if(dateSurgOd.getValue() == null && dateSurgOd.getEditor().getText().equals("")) {
             returnDate = LocalDate.of(1000,1,1);
         }
+        //Check if a date was entered in the TextField
         else if(dateSurgOd.getValue() == null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
             returnDate = LocalDate.parse(dateSurgOd.getEditor().getText(), formatter);
         }
+        //Otherwise date was entered using the calendar
         else {
             returnDate = dateSurgOd.getValue();
         }
