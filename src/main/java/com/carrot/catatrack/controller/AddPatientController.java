@@ -2,6 +2,7 @@ package com.carrot.catatrack.controller;
 
 import com.carrot.catatrack.db.DatabaseService;
 import com.carrot.catatrack.model.Choices;
+import com.carrot.catatrack.model.DateUtils;
 import com.carrot.catatrack.model.Eye;
 import com.carrot.catatrack.model.Patient;
 import javafx.collections.FXCollections;
@@ -138,7 +139,7 @@ public class AddPatientController implements Choices
         DatabaseService db = new DatabaseService();
 
         //Create new Patient
-        LocalDate birthDate = getDate(dateBirth);
+        LocalDate birthDate = DateUtils.getDate(dateBirth);
 
         Patient patient = new Patient(txtID.getText(), txtSurname.getText(), txtInitials.getText(),
                                         Date.valueOf(birthDate), chStatus.getValue(), txtContact.getText(),
@@ -150,14 +151,14 @@ public class AddPatientController implements Choices
         if(patientID != -1) {
 
             //Create and insert Right and Left eye
-            LocalDate surgDateOD = getDate(dateSurg_OD);
+            LocalDate surgDateOD = DateUtils.getDate(dateSurg_OD);
             Eye rightEye = new Eye(patientID, 'R', chLens_OD.getValue(), chInitialVA_OD.getValue(), chPostopVA_OD.getValue(),
                     ch2WeekVA_OD.getValue(), ch6WeekVA_OD.getValue(), txtSurgPlace_OD.getText(), Date.valueOf(surgDateOD),
                     chSurgType_OD.getValue(),txtSurgNotes_OD.getText());
 
             int rCode = db.insertEye(rightEye);
 
-            LocalDate surgDateOS = getDate(dateSurg_OS);
+            LocalDate surgDateOS = DateUtils.getDate(dateSurg_OS);
             Eye leftEye = new Eye(patientID, 'L', chLens_OS.getValue(), chInitialVA_OS.getValue(), chPostopVA_OS.getValue(),
                     ch2WeekVA_OS.getValue(), ch6WeekVA_OS.getValue(), txtSurgPlace_OS.getText(), Date.valueOf(surgDateOS),
                     chSurgType_OS.getValue(),txtSurgNotes_OS.getText());
@@ -179,28 +180,5 @@ public class AddPatientController implements Choices
         else {
             lblStatus.setText("Something went wrong.");
         }
-    }
-
-    /**
-     * Function that extracts the date from a datePicker
-     * @param dateSurgOd the DatePicker
-     * @return A LocalDate from the DatePicker, "1000/01/01" if no date was entered
-     */
-    private LocalDate getDate(DatePicker dateSurgOd) {
-        LocalDate returnDate;
-        //Check if no date was entered
-        if(dateSurgOd.getValue() == null && dateSurgOd.getEditor().getText().equals("")) {
-            returnDate = LocalDate.of(1000,1,1);
-        }
-        //Check if a date was entered in the TextField
-        else if(dateSurgOd.getValue() == null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-            returnDate = LocalDate.parse(dateSurgOd.getEditor().getText(), formatter);
-        }
-        //Otherwise date was entered using the calendar
-        else {
-            returnDate = dateSurgOd.getValue();
-        }
-        return returnDate;
     }
 }

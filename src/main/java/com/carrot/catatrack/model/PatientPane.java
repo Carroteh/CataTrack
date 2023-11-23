@@ -1,21 +1,27 @@
 package com.carrot.catatrack.model;
 
+import com.carrot.catatrack.db.DatabaseService;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.w3c.dom.Text;
 
-import java.time.LocalDate;
 
+import java.sql.Date;
+
+/**
+ * @author Philip Mathee
+ * @version 1.0
+ * Class that creates a pane for a patient and handles updating of patient information
+ */
 public class PatientPane extends TitledPane {
 
     //GENERAL
-    private Patient patient;
-    private Eye rightEye;
-    private Eye leftEye;
+    private final Patient patient;
+    private final Eye rightEye;
+    private final Eye leftEye;
     private Button btnSave;
     private TextField txtSurname;
     private TextField txtID;
@@ -60,17 +66,72 @@ public class PatientPane extends TitledPane {
         setOnAction();
     }
 
+    /**
+     * Function that updates the Patient and Eye data in the database once the Save button is clicked
+     */
+    private void setOnAction() {
+        btnSave.setOnAction(e -> {
+            //DatabaseService instance
+            DatabaseService db = new DatabaseService();
+
+            //Create new patient
+            Patient updatedPatient = new Patient(
+                    this.patient.getPatient_id(),
+                    txtID.getText(),
+                    txtSurname.getText(),
+                    txtInitials.getText(),
+                    Date.valueOf(DateUtils.getDate(dateBirth)),
+                    chStatus.getValue(),
+                    txtContact.getText(),
+                    txtAltContact.getText()
+            );
+
+            Eye updatedRightEye = new Eye(
+                    this.patient.getPatient_id(),
+                    'R',
+                    chLens_OD.getValue(),
+                    chInitialVA_OD.getValue(),
+                    chPostopVA_OD.getValue(),
+                    ch2WeeksVA_OD.getValue(),
+                    ch6WeeksVA_OD.getValue(),
+                    txtSurgPlace_OD.getText(),
+                    Date.valueOf(DateUtils.getDate(dateSurg_OD)),
+                    chSurgType_OD.getValue(),
+                    txtSurgNotes_OD.getText()
+            );
+
+            Eye updatedLeftEye = new Eye(
+                    this.patient.getPatient_id(),
+                    'L',
+                    chLens_OS.getValue(),
+                    chInitialVA_OS.getValue(),
+                    chPostopVA_OS.getValue(),
+                    ch2WeeksVA_OS.getValue(),
+                    ch6WeeksVA_OS.getValue(),
+                    txtSurgPlace_OS.getText(),
+                    Date.valueOf(DateUtils.getDate(dateSurg_OS)),
+                    chSurgType_OS.getValue(),
+                    txtSurgNotes_OS.getText()
+            );
+
+            boolean success = db.editPatient(updatedPatient, updatedRightEye, updatedLeftEye);
+
+            if(success) {
+                setResponse("Success!");
+            }
+            else {
+                setResponse(("Something went wrong."));
+            }
+        });
+    }
+
     private void setResponse(String response) {
         lblResponse.setText(response);
     }
 
-    //TODO setonaction
-    private void setOnAction() {
-        btnSave.setOnAction(e -> {
-
-        });
-    }
-
+    /**
+     * Function that sets the initials values for each control
+     */
     private void setControlValues() {
         //General
         txtSurname.setText(patient.getSurname());
@@ -111,6 +172,9 @@ public class PatientPane extends TitledPane {
                         + patient.getDob() + ", " + rightEye.getVa_final() + " | " + leftEye.getVa_final());
     }
 
+    /**
+     * Function that creates and places the controls
+     */
     private void setupControls() {
         VBox vBox = new VBox();
         vBox.setId("patientVBox");

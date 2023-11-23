@@ -108,4 +108,122 @@ public class DatabaseService {
 
         return PK;
     }
+
+    /**
+     * Function to update a patients information
+     * @param patient the new patient data
+     * @param rightEye the new right eye data
+     * @param leftEye the new left eye data
+     * @return true for success, false for failure
+     */
+    public boolean editPatient(Patient patient, Eye rightEye, Eye leftEye) {
+        String patientSQL = """
+                    UPDATE Patient SET
+                    id_num = ? ,
+                    surname = ? ,
+                    initials = ? ,
+                    dob = ? ,
+                    status = ? ,
+                    contact = ? ,
+                    alt_contact = ?
+                    WHERE patient_id = ?
+                    """;
+
+        String rEyeSQL = """
+                    UPDATE Eye SET
+                    lens = ? ,
+                    va_init = ? ,
+                    va_postop = ?,
+                    va_2weeks = ?,
+                    va_6weeks = ?,
+                    va_final = ?,
+                    surg_date = ?,
+                    surg_type = ?,
+                    surg_notes = ?,
+                    surg_place = ?,
+                    WHERE patient_id = ? AND side = ?
+                         """;
+
+        String lEyeSQL = """
+                    UPDATE Eye SET
+                    lens = ? ,
+                    va_init = ? ,
+                    va_postop = ?,
+                    va_2weeks = ?,
+                    va_6weeks = ?,
+                    va_final = ?,
+                    surg_date = ?,
+                    surg_type = ?,
+                    surg_notes = ?,
+                    surg_place = ?,
+                    WHERE patient_id = ? AND side = ?
+                         """;
+
+        try(Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(patientSQL); ) {
+
+            pstmt.setString(1, patient.getId_num());
+            pstmt.setString(2, patient.getSurname());
+            pstmt.setString(3, patient.getInitials());
+            pstmt.setDate(4,  patient.getDob());
+            pstmt.setString(5, patient.getStatus());
+            pstmt.setString(6, patient.getContact());
+            pstmt.setString(7, patient.getAlt_contact());
+            pstmt.setInt(8, patient.getPatient_id());
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            return false;
+        }
+
+        try(Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(rEyeSQL); ) {
+
+            pstmt.setString(1, rightEye.getLens());
+            pstmt.setString(2, rightEye.getVa_init());
+            pstmt.setString(3, rightEye.getVa_postop());
+            pstmt.setString(4, rightEye.getVa_2weeks());
+            pstmt.setString(5, rightEye.getVa_6weeks());
+            pstmt.setString(6, rightEye.getVa_final());
+            pstmt.setDate(7,rightEye.getSurg_date());
+            pstmt.setString(8, rightEye.getSurg_type());
+            pstmt.setString(9, rightEye.getSurg_notes());
+            pstmt.setString(10, rightEye.getSurg_place());
+            pstmt.setInt(11, patient.getPatient_id());
+            pstmt.setString(12, String.valueOf('R'));
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            return false;
+        }
+
+        try(Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(lEyeSQL); ) {
+
+            pstmt.setString(1, leftEye.getLens());
+            pstmt.setString(2, leftEye.getVa_init());
+            pstmt.setString(3, leftEye.getVa_postop());
+            pstmt.setString(4, leftEye.getVa_2weeks());
+            pstmt.setString(5, leftEye.getVa_6weeks());
+            pstmt.setString(6, leftEye.getVa_final());
+            pstmt.setDate(7, leftEye.getSurg_date());
+            pstmt.setString(8, leftEye.getSurg_type());
+            pstmt.setString(9, leftEye.getSurg_notes());
+            pstmt.setString(10, leftEye.getSurg_place());
+            pstmt.setInt(11, patient.getPatient_id());
+            pstmt.setString(12, String.valueOf('L'));
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            return false;
+        }
+
+        return true;
+    }
 }
