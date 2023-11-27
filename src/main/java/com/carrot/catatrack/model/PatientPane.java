@@ -57,10 +57,10 @@ public class PatientPane extends TitledPane {
     private TextArea txtSurgNotes_OS;
 
 
-    public PatientPane(Patient patient, Eye rightEye, Eye leftEye) {
-        this.rightEye = rightEye;
-        this.leftEye = leftEye;
-        this.patient = patient;
+    public PatientPane(Person person) {
+        this.rightEye = person.getRightEye();
+        this.leftEye = person.getLeftEye();
+        this.patient = person.getPatient();
         setupControls();
         setControlValues();
         setOnAction();

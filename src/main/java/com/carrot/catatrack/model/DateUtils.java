@@ -36,6 +36,6 @@ public class DateUtils {
      * @return true if it matches the default date, false otherwise
      */
     public static boolean isDefault(Date date) {
-        return date.equals(new Date(1000, 01, 01));
+        return date.equals(Date.valueOf("1000-01-01"));
     }
 }

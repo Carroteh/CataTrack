@@ -34,7 +34,7 @@ public class DatabaseService {
         try {
             conn = DriverManager.getConnection("jdbc:sqlite:" + url);
         } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
         return conn;
     }
@@ -65,7 +65,7 @@ public class DatabaseService {
             PK = pstmt.executeUpdate();
 
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
             PK = -1;
         }
 
@@ -106,7 +106,7 @@ public class DatabaseService {
 
         } catch (SQLException ex) {
             PK = -1;
-            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
 
         return PK;
@@ -178,7 +178,7 @@ public class DatabaseService {
             pstmt.executeUpdate();
 
         } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
+            ex.printStackTrace();
             return false;
         }
 
@@ -202,7 +202,7 @@ public class DatabaseService {
             pstmt.executeUpdate();
 
         } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
+            ex.printStackTrace();
             return false;
         }
 
@@ -226,7 +226,7 @@ public class DatabaseService {
             pstmt.executeUpdate();
 
         } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
+            ex.printStackTrace();
             return false;
         }
 
@@ -241,47 +241,68 @@ public class DatabaseService {
      * @param id the patients ID
      * @return an ArrayList of Persons
      */
-    public ArrayList<Person> patientSearch(String surname, String initials, Date dob, String id) {
-
+    public ArrayList<Person> patientSearch(String surname, String initials, Date dob, String id, String status) {
         ArrayList<Person> people = new ArrayList<>();
 
         //Query
-        String patientSQL = """
-                    SELECT * FROM Patient
-                    WHERE surname = ? 
-                    AND initials = ? 
-                    AND dob = ? 
-                    AND id = ? 
-                    """;
+        String patientSQL = "SELECT * FROM Patient WHERE ";
 
-        String eyeSQL = """
+        if(surname.equals("") && initials.equals("") && DateUtils.isDefault(dob) && status.equals("N/A")) {
+            return null;
+        }
+        if (!surname.equals("")) {
+            patientSQL += "surname = ? AND ";
+        }
+        if(!initials.equals("")) {
+            patientSQL += "initials = ? AND ";
+        }
+        if(!DateUtils.isDefault(dob)) {
+            patientSQL += "dob = ? AND ";
+        }
+        if(!status.equals("N/A")) {
+            patientSQL += "status = ? AND ";
+        }
+        patientSQL = patientSQL.substring(0,patientSQL.length()-5);
+
+        String rightEyeSQL = """
                 SELECT * FROM Eye
-                WHERE side = ? 
+                WHERE side = 'R'
+                AND patient_id = ?
+                """;
+
+        String leftEyeSQL = """
+                SELECT * FROM Eye
+                WHERE side = 'L'
                 AND patient_id = ?
                 """;
 
         try(Connection conn = this.connect();
             PreparedStatement patientStatement = conn.prepareStatement(patientSQL);
-            PreparedStatement eyeStatement = conn.prepareStatement(eyeSQL)) {
+            PreparedStatement rightEyeStatement = conn.prepareStatement(rightEyeSQL);
+            PreparedStatement leftEyeStatement = conn.prepareStatement(leftEyeSQL)) {
+
+            int param = 1;
 
             //Create Prepared Statement
-            String sqlSurname = surname.equals("") ? "surname" : surname;
-            String sqlInitials = initials.equals("") ? "initials" : initials;
-            String sqlID =  id.equals("") ? "id" : id;
-
-            patientStatement.setString(1, sqlSurname);
-            patientStatement.setString(2, sqlInitials);
-
-            if(DateUtils.isDefault(dob)) {
-                patientStatement.setString(3, "dob");
+            if (!surname.equals("")) {
+                patientStatement.setString(param, surname);
+                param++;
             }
-            else  {
-                patientStatement.setDate(3, dob);
+            if(!initials.equals("")) {
+                patientStatement.setString(param, initials);
+                param++;
+            }
+            if(!DateUtils.isDefault(dob)) {
+                patientStatement.setDate(param, dob);
+                param++;
+            }
+            if(!status.equals("N/A")) {
+                patientStatement.setString(param, status);
             }
 
-            patientStatement.setString(4, sqlID);
-
-            ResultSet patientResult = patientStatement.executeQuery(patientSQL);
+            System.out.println(patientSQL);
+            //Get patients that match query
+            ResultSet patientResult = patientStatement.executeQuery();
 
             //Loop through patients
             while(patientResult.next()) {
@@ -296,15 +317,15 @@ public class DatabaseService {
                         patientResult.getString("alt_contact"));
 
                 //Fetch eyes of each patient
-                eyeStatement.setString(1, String.valueOf('R'));
-                eyeStatement.setInt(2, patient.getPatient_id());
+                //RIGHT
+                rightEyeStatement.setInt(1, patient.getPatient_id());
 
-                ResultSet rightEyeResult = eyeStatement.executeQuery(eyeSQL);
+                ResultSet rightEyeResult = rightEyeStatement.executeQuery();
 
-                eyeStatement.setString(1, String.valueOf('L'));
-                eyeStatement.setInt(2, patient.getPatient_id());
+                //LEFT
+                leftEyeStatement.setInt(1, patient.getPatient_id());
 
-                ResultSet leftEyeResult = eyeStatement.executeQuery(eyeSQL);
+                ResultSet leftEyeResult = leftEyeStatement.executeQuery();
 
                 Eye rightEye = new Eye(
                     rightEyeResult.getInt("patient_id"),
@@ -340,7 +361,7 @@ public class DatabaseService {
             }
 
         }catch(SQLException ex) {
-            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
 
         return people;
