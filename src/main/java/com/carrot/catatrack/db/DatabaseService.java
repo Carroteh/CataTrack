@@ -1,10 +1,13 @@
 package com.carrot.catatrack.db;
 
+import com.carrot.catatrack.model.DateUtils;
 import com.carrot.catatrack.model.Eye;
 import com.carrot.catatrack.model.Patient;
+import com.carrot.catatrack.model.Person;
 
 import java.net.URL;
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  * @author Philip Mathee
@@ -140,7 +143,7 @@ public class DatabaseService {
                     surg_date = ?,
                     surg_type = ?,
                     surg_notes = ?,
-                    surg_place = ?,
+                    surg_place = ?
                     WHERE patient_id = ? AND side = ?
                          """;
 
@@ -155,10 +158,11 @@ public class DatabaseService {
                     surg_date = ?,
                     surg_type = ?,
                     surg_notes = ?,
-                    surg_place = ?,
+                    surg_place = ?
                     WHERE patient_id = ? AND side = ?
                          """;
 
+        //Update patient table
         try(Connection conn = this.connect();
             PreparedStatement pstmt = conn.prepareStatement(patientSQL); ) {
 
@@ -178,6 +182,7 @@ public class DatabaseService {
             return false;
         }
 
+        //Update Right Eye
         try(Connection conn = this.connect();
             PreparedStatement pstmt = conn.prepareStatement(rEyeSQL); ) {
 
@@ -201,6 +206,7 @@ public class DatabaseService {
             return false;
         }
 
+        //Update Left Eye
         try(Connection conn = this.connect();
             PreparedStatement pstmt = conn.prepareStatement(lEyeSQL); ) {
 
@@ -225,5 +231,118 @@ public class DatabaseService {
         }
 
         return true;
+    }
+
+    /**
+     * Returns patients retrieved from a patient search
+     * @param surname the patients surname
+     * @param initials the patients initials
+     * @param dob the patients date of birth
+     * @param id the patients ID
+     * @return an ArrayList of Persons
+     */
+    public ArrayList<Person> patientSearch(String surname, String initials, Date dob, String id) {
+
+        ArrayList<Person> people = new ArrayList<>();
+
+        //Query
+        String patientSQL = """
+                    SELECT * FROM Patient
+                    WHERE surname = ? 
+                    AND initials = ? 
+                    AND dob = ? 
+                    AND id = ? 
+                    """;
+
+        String eyeSQL = """
+                SELECT * FROM Eye
+                WHERE side = ? 
+                AND patient_id = ?
+                """;
+
+        try(Connection conn = this.connect();
+            PreparedStatement patientStatement = conn.prepareStatement(patientSQL);
+            PreparedStatement eyeStatement = conn.prepareStatement(eyeSQL)) {
+
+            //Create Prepared Statement
+            String sqlSurname = surname.equals("") ? "surname" : surname;
+            String sqlInitials = initials.equals("") ? "initials" : initials;
+            String sqlID =  id.equals("") ? "id" : id;
+
+            patientStatement.setString(1, sqlSurname);
+            patientStatement.setString(2, sqlInitials);
+
+            if(DateUtils.isDefault(dob)) {
+                patientStatement.setString(3, "dob");
+            }
+            else  {
+                patientStatement.setDate(3, dob);
+            }
+
+            patientStatement.setString(4, sqlID);
+
+            ResultSet patientResult = patientStatement.executeQuery(patientSQL);
+
+            //Loop through patients
+            while(patientResult.next()) {
+                Patient patient = new Patient(
+                        patientResult.getInt("patient_id"),
+                        patientResult.getString("id_num"),
+                        patientResult.getString("surname"),
+                        patientResult.getString("initials"),
+                        patientResult.getDate("dob"),
+                        patientResult.getString("status"),
+                        patientResult.getString("contact"),
+                        patientResult.getString("alt_contact"));
+
+                //Fetch eyes of each patient
+                eyeStatement.setString(1, String.valueOf('R'));
+                eyeStatement.setInt(2, patient.getPatient_id());
+
+                ResultSet rightEyeResult = eyeStatement.executeQuery(eyeSQL);
+
+                eyeStatement.setString(1, String.valueOf('L'));
+                eyeStatement.setInt(2, patient.getPatient_id());
+
+                ResultSet leftEyeResult = eyeStatement.executeQuery(eyeSQL);
+
+                Eye rightEye = new Eye(
+                    rightEyeResult.getInt("patient_id"),
+                    rightEyeResult.getString("side").charAt(0),
+                    rightEyeResult.getString("lens"),
+                    rightEyeResult.getString("va_init"),
+                    rightEyeResult.getString("va_postop"),
+                    rightEyeResult.getString("va_2weeks"),
+                    rightEyeResult.getString("va_6weeks"),
+                    rightEyeResult.getString("surg_place"),
+                    rightEyeResult.getDate("surg_date"),
+                    rightEyeResult.getString("surg_type"),
+                    rightEyeResult.getString("surg_notes")
+                );
+
+                Eye leftEye = new Eye(
+                        leftEyeResult.getInt("patient_id"),
+                        leftEyeResult.getString("side").charAt(0),
+                        leftEyeResult.getString("lens"),
+                        leftEyeResult.getString("va_init"),
+                        leftEyeResult.getString("va_postop"),
+                        leftEyeResult.getString("va_2weeks"),
+                        leftEyeResult.getString("va_6weeks"),
+                        leftEyeResult.getString("surg_place"),
+                        leftEyeResult.getDate("surg_date"),
+                        leftEyeResult.getString("surg_type"),
+                        leftEyeResult.getString("surg_notes")
+                );
+
+                //create new person and add them to the array list
+                Person person = new Person(patient, rightEye, leftEye);
+                people.add(person);
+            }
+
+        }catch(SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+
+        return people;
     }
 }

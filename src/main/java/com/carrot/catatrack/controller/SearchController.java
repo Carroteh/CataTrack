@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.time.Instant;
 import java.time.LocalDate;
 
 /**
@@ -36,13 +35,13 @@ public class SearchController implements Choices
     @FXML
     private Label lblDOB;
     @FXML
-    private ChoiceBox chLensFilter;
+    private ChoiceBox<String> chLensFilter;
     @FXML
-    private ChoiceBox chStatusFilter;
+    private ChoiceBox<String> chStatusFilter;
     @FXML
-    private ChoiceBox chVAFilter;
+    private ChoiceBox<String> chVAFilter;
     @FXML
-    private ChoiceBox ch;
+    private ChoiceBox<String> ch;
     @FXML
     private TextField txtSurname;
     @FXML

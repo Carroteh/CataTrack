@@ -2,6 +2,7 @@ package com.carrot.catatrack.model;
 
 import javafx.scene.control.DatePicker;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -27,5 +28,14 @@ public class DateUtils {
             returnDate = datePicker.getValue();
         }
         return returnDate;
+    }
+
+    /**
+     * Checks if the date is the default date of 1000/01/01
+     * @param date the date to check
+     * @return true if it matches the default date, false otherwise
+     */
+    public static boolean isDefault(Date date) {
+        return date.equals(new Date(1000, 01, 01));
     }
 }
