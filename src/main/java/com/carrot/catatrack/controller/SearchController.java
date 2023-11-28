@@ -3,12 +3,10 @@ package com.carrot.catatrack.controller;
 import com.carrot.catatrack.db.DatabaseService;
 import com.carrot.catatrack.model.*;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -28,7 +26,7 @@ public class SearchController implements Choices
     @javafx.fxml.FXML
     private AnchorPane root;
     @javafx.fxml.FXML
-    private MenuItem itmAddPatient;
+    private DatabaseService db;
     private Stage stage;
     @FXML
     private Accordion patientAccordion;
@@ -39,11 +37,7 @@ public class SearchController implements Choices
     @FXML
     private ChoiceBox<String> chLensFilter;
     @FXML
-    private ChoiceBox<String> chStatusFilter;
-    @FXML
     private ChoiceBox<String> chVAFilter;
-    @FXML
-    private ChoiceBox<String> ch;
     @FXML
     private TextField txtSurname;
     @FXML
@@ -62,6 +56,14 @@ public class SearchController implements Choices
     private Button btnGeneralSearch;
     @FXML
     private ChoiceBox<String> chStatus;
+    @FXML
+    private TextField txtContact;
+    @FXML
+    private TextField txtAltContact;
+    @FXML
+    private ChoiceBox<String> chSurgTypeFilter;
+    @FXML
+    private TextField txtSurgPlaceFilter;
 
 
     private void addPersonToAccordion(Person person) {
@@ -71,10 +73,20 @@ public class SearchController implements Choices
 
     @javafx.fxml.FXML
     public void initialize() {
+        //Setup choice boxes and choices
         chStatus.setItems(FXCollections.observableArrayList(Choices.status));
         chStatus.setValue("N/A");
-        lblSurgDate.setId("Response");
+        chLensFilter.setItems(FXCollections.observableArrayList(Choices.Lens));
+        chVAFilter.setItems(FXCollections.observableArrayList(Choices.VAList));
+        chSurgTypeFilter.setItems(FXCollections.observableArrayList(Choices.surgeryType));
+        chLensFilter.setValue("N/A");
+        chVAFilter.setValue("N/A");
+        chSurgTypeFilter.setValue("N/A");
+
+        db = new DatabaseService();
+
         lblDOB.setId("Response");
+        lblSurgDate.setId("Response");
         for (int i=0; i<3; i++) {
             addPersonToAccordion(new Person(new Patient("0304095255085","Mathee","P",Date.valueOf(LocalDate.now()), "Awaiting 2nd Surgery", "0609054561", "123")
                     , new Eye(1,'R',"mature","6/12","","","","bloem",Date.valueOf(LocalDate.now()),"sics","notes")
@@ -93,15 +105,10 @@ public class SearchController implements Choices
 
     @FXML
     public void doPatientSearch(ActionEvent actionEvent) {
-        patientAccordion.getPanes().clear();
+        clearResults();
 
-        DatabaseService db = new DatabaseService();
+        ArrayList<Person> results = db.patientSearch(txtSurname.getText(), txtInitials.getText(), Date.valueOf(DateUtils.getDate(dateBirth)), txtID.getText(), chStatus.getValue(), txtContact.getText(), txtAltContact.getText());
 
-        ArrayList<Person> results = db.patientSearch(txtSurname.getText(), txtInitials.getText(), Date.valueOf(DateUtils.getDate(dateBirth)), txtID.getText(), chStatus.getValue());
-        System.out.println(txtSurname.getText());
-        System.out.println(txtInitials.getText());
-        System.out.println(Date.valueOf(DateUtils.getDate(dateBirth)));
-        System.out.println(chStatus.getValue());
         //Add the found patients to the list
         if(results != null) {
             for (Person person : results) {
@@ -113,9 +120,17 @@ public class SearchController implements Choices
     @FXML
     public void doGeneralSearch(ActionEvent actionEvent) {
         clearResults();
+
+        ArrayList<Person> results = db.generalSearch(Date.valueOf(DateUtils.getDate(dateSurgFilter)), chkMonth.isSelected(), chLensFilter.getValue(), chVAFilter.getValue(), chSurgTypeFilter.getValue(), txtSurgPlaceFilter.getText());
+
+        if(results != null) {
+            for(Person person : results) {
+                addPersonToAccordion(person);
+            }
+        }
     }
 
     private void clearResults() {
-
+        patientAccordion.getPanes().clear();
     }
 }
