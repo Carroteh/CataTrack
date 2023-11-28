@@ -137,7 +137,14 @@ public class PatientPane extends TitledPane {
         txtSurname.setText(patient.getSurname());
         txtID.setText(patient.getId_num());
         txtInitials.setText(patient.getInitials());
-        dateBirth.setValue(patient.getDob().toLocalDate());
+
+        if(!DateUtils.isDefault(patient.getDob())) {
+            dateBirth.setValue(patient.getDob().toLocalDate());
+        }
+        else {
+            dateBirth.setValue(null);
+        }
+
         txtContact.setText(patient.getContact());
         txtAltContact.setText(patient.getAlt_contact());
         chStatus.setValue(patient.getStatus());
@@ -150,7 +157,14 @@ public class PatientPane extends TitledPane {
         ch6WeeksVA_OD.setValue(rightEye.getVa_6weeks());
         chFinalVA_OD.setValue(rightEye.getVa_final());
 
-        dateSurg_OD.setValue(rightEye.getSurg_date().toLocalDate());
+        if(!DateUtils.isDefault(rightEye.getSurg_date())) {
+            dateSurg_OD.setValue(rightEye.getSurg_date().toLocalDate());
+        }
+        else {
+            dateSurg_OD.setValue(null);
+        }
+
+
         chSurgType_OD.setValue(rightEye.getSurg_type());
         txtSurgPlace_OD.setText(rightEye.getSurg_place());
         txtSurgNotes_OD.setText(rightEye.getSurg_notes());
@@ -163,7 +177,13 @@ public class PatientPane extends TitledPane {
         ch6WeeksVA_OS.setValue(leftEye.getVa_6weeks());
         chFinalVA_OS.setValue(leftEye.getVa_final());
 
-        dateSurg_OS.setValue(leftEye.getSurg_date().toLocalDate());
+        if(!DateUtils.isDefault(leftEye.getSurg_date())) {
+            dateSurg_OS.setValue(leftEye.getSurg_date().toLocalDate());
+        }
+        else {
+            dateSurg_OS.setValue(null);
+        }
+
         chSurgType_OS.setValue(leftEye.getSurg_type());
         txtSurgPlace_OS.setText(leftEye.getSurg_place());
         txtSurgNotes_OS.setText(leftEye.getSurg_notes());

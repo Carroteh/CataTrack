@@ -29,7 +29,6 @@ public class DatabaseService {
     private Connection connect() {
         //URL to database
         URL url = getClass().getResource("/com/carrot/catatrack/db/catatrack.db");
-        System.out.println(url);
         Connection conn = null;
         try {
             conn = DriverManager.getConnection("jdbc:sqlite:" + url);
@@ -49,10 +48,12 @@ public class DatabaseService {
 
         //SQL statement
         String sql = "INSERT INTO Patient(id_num,surname,initials,dob,status,contact,alt_contact) VALUES (?,?,?,?,?,?,?)";
+        String pkSQL = "SELECT last_insert_rowid()";
 
         //Prepare and execute statement
         try(Connection conn = this.connect();
-            PreparedStatement pstmt = conn.prepareStatement(sql);) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            PreparedStatement pkstmt = conn.prepareStatement(pkSQL)) {
 
             pstmt.setString(1, patient.getId_num());
             pstmt.setString(2, patient.getSurname());
@@ -62,7 +63,12 @@ public class DatabaseService {
             pstmt.setString(6, patient.getContact());
             pstmt.setString(7, patient.getAlt_contact());
 
-            PK = pstmt.executeUpdate();
+            pstmt.executeUpdate();
+            ResultSet rs = pkstmt.executeQuery();
+
+            while(rs.next()) {
+                PK = rs.getInt(1);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -315,7 +321,6 @@ public class DatabaseService {
                 patientStatement.setString(param, alt_contact);
             }
 
-            System.out.println(patientSQL);
             //Get patients that match query
             ResultSet patientResult = patientStatement.executeQuery();
 

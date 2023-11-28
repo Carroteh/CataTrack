@@ -63,27 +63,21 @@ public class Eye {
     private String determineFinalVA(String init, String postop, String week2, String week6) {
 
         //Check for the latest available VA
-        if(week6 != null) {
-            if(!week6.equals("")) {
-                return  week6;
-            }
+
+        if(!week6.equals("N/A")) {
+            return  week6;
         }
-        if(week2 != null) {
-            if(!week2.equals("")) {
-                return week2;
-            }
+        if(!week2.equals("N/A")) {
+            return week2;
         }
-        if(postop != null) {
-            if(!postop.equals("")) {
-                return postop;
-            }
+        if(!postop.equals("N/A")) {
+            return postop;
         }
-        if(init != null) {
-            if(!init.equals("")) {
-                return init;
-            }
+        if(!init.equals("N/A")) {
+            return init;
         }
-        return "";
+
+        return "N/A";
     }
 
     public int getPatient_id() {

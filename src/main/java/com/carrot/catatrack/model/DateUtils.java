@@ -14,19 +14,18 @@ public class DateUtils {
      */
     public static LocalDate getDate(DatePicker datePicker) {
         LocalDate returnDate;
+
         //Check if no date was entered
-        if(datePicker.getValue() == null && datePicker.getEditor().getText().equals("")) {
+        if(datePicker.getEditor().getText().equals("")) {
             returnDate = LocalDate.of(1000,1,1);
+            datePicker.setValue(null);
         }
         //Check if a date was entered in the TextField
-        else if(datePicker.getValue() == null) {
+        else {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
             returnDate = LocalDate.parse(datePicker.getEditor().getText(), formatter);
         }
-        //Otherwise date was entered using the calendar
-        else {
-            returnDate = datePicker.getValue();
-        }
+
         return returnDate;
     }
 

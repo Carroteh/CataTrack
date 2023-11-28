@@ -175,10 +175,46 @@ public class AddPatientController implements Choices
             }
             else {
                 lblStatus.setText("Success!");
+                clearFields();
             }
         }
         else {
             lblStatus.setText("Something went wrong.");
         }
+    }
+
+    /**
+     * Function that clears all the input fields
+     */
+    private void clearFields() {
+        txtSurname.setText("");
+        chStatus.setValue("N/A");
+        txtInitials.setText("");
+        txtContact.setText("");
+        txtAltContact.setText("");
+        txtID.setText("");
+        dateBirth.setValue(null);
+
+        chLens_OD.setValue("N/A");
+        chInitialVA_OD.setValue("N/A");
+        chPostopVA_OD.setValue("N/A");
+        ch2WeekVA_OD.setValue("N/A");
+        ch6WeekVA_OD.setValue("N/A");
+        chFinalVA_OD.setValue("N/A");
+        dateSurg_OD.setValue(null);
+        chSurgType_OD.setValue("N/A");
+        txtSurgPlace_OD.setText("");
+        txtSurgNotes_OD.setText("");
+
+        chLens_OS.setValue("N/A");
+        chInitialVA_OS.setValue("N/A");
+        chPostopVA_OS.setValue("N/A");
+        ch2WeekVA_OS.setValue("N/A");
+        ch6WeekVA_OS.setValue("N/A");
+        chFinalVA_OS.setValue("N/A");
+        dateSurg_OS.setValue(null);
+        chSurgType_OS.setValue("N/A");
+        txtSurgPlace_OS.setText("");
+        txtSurgNotes_OS.setText("");
     }
 }

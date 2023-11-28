@@ -115,6 +115,7 @@ public class SearchController implements Choices
                 addPersonToAccordion(person);
             }
         }
+        clearDatePicker();
     }
 
     @FXML
@@ -128,9 +129,14 @@ public class SearchController implements Choices
                 addPersonToAccordion(person);
             }
         }
+        clearDatePicker();
     }
 
     private void clearResults() {
         patientAccordion.getPanes().clear();
+    }
+
+    private void clearDatePicker() {
+
     }
 }
