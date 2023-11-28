@@ -401,7 +401,7 @@ public class DatabaseService {
             return null;
         }
         //General SQL
-        String generalSQL = "SELECT * FROM WHERE ";
+        String generalSQL = "SELECT * FROM Eye WHERE ";
 
         if(!DateUtils.isDefault(surg_date)) {
             if(month) {
@@ -452,15 +452,15 @@ public class DatabaseService {
                 }
                 param++;
             }
-            if(!lens.equals("")) {
+            if(!lens.equals("N/A")) {
                 generalStatement.setString(param, lens);
                 param++;
             }
-            if(!va_final.equals("")) {
+            if(!va_final.equals("N/A")) {
                 generalStatement.setString(param, va_final);
                 param++;
             }
-            if(!surg_type.equals("")) {
+            if(!surg_type.equals("N/A")) {
                 generalStatement.setString(param, surg_type);
             }
             if(!surg_place.equals("")) {

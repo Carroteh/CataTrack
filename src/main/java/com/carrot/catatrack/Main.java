@@ -20,7 +20,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/views/searchView.fxml"));
         URL stylesheet = getClass().getResource("/com/carrot/catatrack/styles/styles.css");
         Scene scene = new Scene(fxmlLoader.load());
