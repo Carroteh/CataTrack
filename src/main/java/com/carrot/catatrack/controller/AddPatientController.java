@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 /**
  * @author Philip Mathee
@@ -194,6 +193,7 @@ public class AddPatientController implements Choices
         txtAltContact.setText("");
         txtID.setText("");
         dateBirth.setValue(null);
+        dateBirth.getEditor().setText("");
 
         chLens_OD.setValue("N/A");
         chInitialVA_OD.setValue("N/A");
@@ -202,6 +202,7 @@ public class AddPatientController implements Choices
         ch6WeekVA_OD.setValue("N/A");
         chFinalVA_OD.setValue("N/A");
         dateSurg_OD.setValue(null);
+        dateSurg_OD.getEditor().setText("");
         chSurgType_OD.setValue("N/A");
         txtSurgPlace_OD.setText("");
         txtSurgNotes_OD.setText("");
@@ -213,6 +214,7 @@ public class AddPatientController implements Choices
         ch6WeekVA_OS.setValue("N/A");
         chFinalVA_OS.setValue("N/A");
         dateSurg_OS.setValue(null);
+        dateSurg_OS.getEditor().setText("");
         chSurgType_OS.setValue("N/A");
         txtSurgPlace_OS.setText("");
         txtSurgNotes_OS.setText("");

@@ -28,10 +28,11 @@ public class DatabaseService {
      */
     private Connection connect() {
         //URL to database
-        URL url = getClass().getResource("/com/carrot/catatrack/db/catatrack.db");
+//        URL url = getClass().getResource("C:/Database/catatrack.db");
+//        System.out.println(url);
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection("jdbc:sqlite:" + url);
+            conn = DriverManager.getConnection("jdbc:sqlite:C:/Database/catatrack.db");
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -253,7 +254,7 @@ public class DatabaseService {
         //Query
         String patientSQL = "SELECT * FROM Patient WHERE ";
 
-        if(surname.equals("") && initials.equals("") && DateUtils.isDefault(dob) && status.equals("N/A")) {
+        if(surname.equals("") && initials.equals("") && DateUtils.isDefault(dob) && status.equals("N/A") && contact.equals("") && alt_contact.equals("")) {
             return null;
         }
         if (!surname.equals("")) {

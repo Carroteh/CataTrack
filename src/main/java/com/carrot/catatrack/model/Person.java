@@ -1,5 +1,10 @@
 package com.carrot.catatrack.model;
 
+/**
+ * @author Philip Mathee
+ * @version 1.0
+ * Class that contains a patient and their two respective eyes, to enable easier data transport
+ */
 public class Person {
 
     private Patient patient;

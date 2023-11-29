@@ -6,6 +6,11 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * @author Philip Mathee
+ * @version 1.0
+ * Utility class used to handle dates
+ */
 public class DateUtils {
     /**
      * Function that extracts the date from a datePicker

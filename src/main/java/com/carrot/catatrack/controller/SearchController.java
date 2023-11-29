@@ -13,7 +13,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -87,11 +86,6 @@ public class SearchController implements Choices
 
         lblDOB.setId("Response");
         lblSurgDate.setId("Response");
-        for (int i=0; i<3; i++) {
-            addPersonToAccordion(new Person(new Patient("0304095255085","Mathee","P",Date.valueOf(LocalDate.now()), "Awaiting 2nd Surgery", "0609054561", "123")
-                    , new Eye(1,'R',"mature","6/12","","","","bloem",Date.valueOf(LocalDate.now()),"sics","notes")
-                    , new Eye(1,'L',"early","LP","6/6","","","kwakwa",Date.valueOf(LocalDate.now()),"sics","notes")));
-        }
     }
 
     @javafx.fxml.FXML
