@@ -5,7 +5,6 @@ import com.carrot.catatrack.model.Eye;
 import com.carrot.catatrack.model.Patient;
 import com.carrot.catatrack.model.Person;
 
-import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -24,6 +23,7 @@ public class DatabaseService {
 
     /**
      * Method that attempts to connect to the database
+     *
      * @return Connection object
      */
     private Connection connect() {
@@ -39,12 +39,27 @@ public class DatabaseService {
         return conn;
     }
 
+    public boolean insertPerson(Person person) {
+        int patStatus = insertPatient(person.getPatient());
+        if (patStatus != -1) {
+            int rEye = insertEye(person.getRightEye());
+            int lEye = insertEye(person.getLeftEye());
+            if (rEye == -1 || lEye == -1) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Function that inserts a new patient into the database
+     *
      * @param patient the patient to insert
      * @return the patients primary key (row ID) or -1 for failure
      */
-    public int insertPatient(Patient patient) {
+    private int insertPatient(Patient patient) {
         int PK = 0;
 
         //SQL statement
@@ -52,9 +67,9 @@ public class DatabaseService {
         String pkSQL = "SELECT last_insert_rowid()";
 
         //Prepare and execute statement
-        try(Connection conn = this.connect();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            PreparedStatement pkstmt = conn.prepareStatement(pkSQL)) {
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             PreparedStatement pkstmt = conn.prepareStatement(pkSQL)) {
 
             pstmt.setString(1, patient.getId_num());
             pstmt.setString(2, patient.getSurname());
@@ -67,7 +82,7 @@ public class DatabaseService {
             pstmt.executeUpdate();
             ResultSet rs = pkstmt.executeQuery();
 
-            while(rs.next()) {
+            while (rs.next()) {
                 PK = rs.getInt(1);
             }
 
@@ -81,10 +96,11 @@ public class DatabaseService {
 
     /**
      * Function to insert eye information for a patient
+     *
      * @param eye the eye top insert
      * @return the Primary Key of the new record
      */
-    public int insertEye(Eye eye) {
+    private int insertEye(Eye eye) {
         int PK = 0;
 
         //SQL statement
@@ -121,12 +137,11 @@ public class DatabaseService {
 
     /**
      * Function to update a patients information
-     * @param patient the new patient data
-     * @param rightEye the new right eye data
-     * @param leftEye the new left eye data
+     *
+     * @param person the Person to add
      * @return true for success, false for failure
      */
-    public boolean editPatient(Patient patient, Eye rightEye, Eye leftEye) {
+    public boolean editPatient(Person person) {
         String patientSQL = """
                     UPDATE Patient SET
                     id_num = ? ,
@@ -173,14 +188,14 @@ public class DatabaseService {
         try(Connection conn = this.connect();
             PreparedStatement pstmt = conn.prepareStatement(patientSQL); ) {
 
-            pstmt.setString(1, patient.getId_num());
-            pstmt.setString(2, patient.getSurname());
-            pstmt.setString(3, patient.getInitials());
-            pstmt.setDate(4,  patient.getDob());
-            pstmt.setString(5, patient.getStatus());
-            pstmt.setString(6, patient.getContact());
-            pstmt.setString(7, patient.getAlt_contact());
-            pstmt.setInt(8, patient.getPatient_id());
+            pstmt.setString(1, person.getPatient().getId_num());
+            pstmt.setString(2, person.getPatient().getSurname());
+            pstmt.setString(3, person.getPatient().getInitials());
+            pstmt.setDate(4,  person.getPatient().getDob());
+            pstmt.setString(5, person.getPatient().getStatus());
+            pstmt.setString(6, person.getPatient().getContact());
+            pstmt.setString(7, person.getPatient().getAlt_contact());
+            pstmt.setInt(8, person.getPatient().getPatient_id());
 
             pstmt.executeUpdate();
 
@@ -193,17 +208,17 @@ public class DatabaseService {
         try(Connection conn = this.connect();
             PreparedStatement pstmt = conn.prepareStatement(rEyeSQL); ) {
 
-            pstmt.setString(1, rightEye.getLens());
-            pstmt.setString(2, rightEye.getVa_init());
-            pstmt.setString(3, rightEye.getVa_postop());
-            pstmt.setString(4, rightEye.getVa_2weeks());
-            pstmt.setString(5, rightEye.getVa_6weeks());
-            pstmt.setString(6, rightEye.getVa_final());
-            pstmt.setDate(7,rightEye.getSurg_date());
-            pstmt.setString(8, rightEye.getSurg_type());
-            pstmt.setString(9, rightEye.getSurg_notes());
-            pstmt.setString(10, rightEye.getSurg_place());
-            pstmt.setInt(11, patient.getPatient_id());
+            pstmt.setString(1, person.getRightEye().getLens());
+            pstmt.setString(2,  person.getRightEye().getVa_init());
+            pstmt.setString(3,  person.getRightEye().getVa_postop());
+            pstmt.setString(4,  person.getRightEye().getVa_2weeks());
+            pstmt.setString(5,  person.getRightEye().getVa_6weeks());
+            pstmt.setString(6,  person.getRightEye().getVa_final());
+            pstmt.setDate(7, person.getRightEye().getSurg_date());
+            pstmt.setString(8,  person.getRightEye().getSurg_type());
+            pstmt.setString(9,  person.getRightEye().getSurg_notes());
+            pstmt.setString(10,  person.getRightEye().getSurg_place());
+            pstmt.setInt(11,  person.getPatient().getPatient_id());
             pstmt.setString(12, String.valueOf('R'));
 
             pstmt.executeUpdate();
@@ -217,17 +232,17 @@ public class DatabaseService {
         try(Connection conn = this.connect();
             PreparedStatement pstmt = conn.prepareStatement(lEyeSQL); ) {
 
-            pstmt.setString(1, leftEye.getLens());
-            pstmt.setString(2, leftEye.getVa_init());
-            pstmt.setString(3, leftEye.getVa_postop());
-            pstmt.setString(4, leftEye.getVa_2weeks());
-            pstmt.setString(5, leftEye.getVa_6weeks());
-            pstmt.setString(6, leftEye.getVa_final());
-            pstmt.setDate(7, leftEye.getSurg_date());
-            pstmt.setString(8, leftEye.getSurg_type());
-            pstmt.setString(9, leftEye.getSurg_notes());
-            pstmt.setString(10, leftEye.getSurg_place());
-            pstmt.setInt(11, patient.getPatient_id());
+            pstmt.setString(1, person.getLeftEye().getLens());
+            pstmt.setString(2, person.getLeftEye().getVa_init());
+            pstmt.setString(3, person.getLeftEye().getVa_postop());
+            pstmt.setString(4, person.getLeftEye().getVa_2weeks());
+            pstmt.setString(5, person.getLeftEye().getVa_6weeks());
+            pstmt.setString(6, person.getLeftEye().getVa_final());
+            pstmt.setDate(7, person.getLeftEye().getSurg_date());
+            pstmt.setString(8, person.getLeftEye().getSurg_type());
+            pstmt.setString(9, person.getLeftEye().getSurg_notes());
+            pstmt.setString(10, person.getLeftEye().getSurg_place());
+            pstmt.setInt(11, person.getPatient().getPatient_id());
             pstmt.setString(12, String.valueOf('L'));
 
             pstmt.executeUpdate();
@@ -242,10 +257,11 @@ public class DatabaseService {
 
     /**
      * Returns patients retrieved from a patient search
-     * @param surname the patients surname
+     *
+     * @param surname  the patients surname
      * @param initials the patients initials
-     * @param dob the patients date of birth
-     * @param id the patients ID
+     * @param dob      the patients date of birth
+     * @param id       the patients ID
      * @return an ArrayList of Persons
      */
     public ArrayList<Person> patientSearch(String surname, String initials, Date dob, String id, String status, String contact, String alt_contact) {
@@ -254,7 +270,7 @@ public class DatabaseService {
         //Query
         String patientSQL = "SELECT * FROM Patient WHERE ";
 
-        if(surname.equals("") && initials.equals("") && DateUtils.isDefault(dob) && status.equals("N/A") && contact.equals("") && alt_contact.equals("")) {
+        if(surname.equals("") && initials.equals("") && DateUtils.isDefault(dob) && status.equals("N/A") && contact.equals("") && alt_contact.equals("") && id.equals("")) {
             return null;
         }
         if (!surname.equals("")) {
@@ -275,25 +291,20 @@ public class DatabaseService {
         if(!alt_contact.equals("")) {
             patientSQL+= "alt_contact = ? AND ";
         }
+        if(!id.equals("")) {
+            if(id.length() == 6) {
+                patientSQL += "substr(id_num,1,6) = ? AND ";
+            }
+            else {
+                patientSQL += "id_num = ? AND ";
+            }
+        }
+
 
         patientSQL = patientSQL.substring(0,patientSQL.length()-5);
 
-        String rightEyeSQL = """
-                SELECT * FROM Eye
-                WHERE side = 'R'
-                AND patient_id = ?
-                """;
-
-        String leftEyeSQL = """
-                SELECT * FROM Eye
-                WHERE side = 'L'
-                AND patient_id = ?
-                """;
-
         try(Connection conn = this.connect();
-            PreparedStatement patientStatement = conn.prepareStatement(patientSQL);
-            PreparedStatement rightEyeStatement = conn.prepareStatement(rightEyeSQL);
-            PreparedStatement leftEyeStatement = conn.prepareStatement(leftEyeSQL)) {
+            PreparedStatement patientStatement = conn.prepareStatement(patientSQL)) {
 
             int param = 1;
 
@@ -321,6 +332,9 @@ public class DatabaseService {
             if(!alt_contact.equals("")) {
                 patientStatement.setString(param, alt_contact);
             }
+            if(!id.equals("")) {
+                patientStatement.setString(param, id);
+            }
 
             //Get patients that match query
             ResultSet patientResult = patientStatement.executeQuery();
@@ -339,42 +353,10 @@ public class DatabaseService {
 
                 //Fetch eyes of each patient
                 //RIGHT
-                rightEyeStatement.setInt(1, patient.getPatient_id());
-
-                ResultSet rightEyeResult = rightEyeStatement.executeQuery();
+                Eye rightEye = getEyeForPatient(conn, patient.getPatient_id(), 'R');
 
                 //LEFT
-                leftEyeStatement.setInt(1, patient.getPatient_id());
-
-                ResultSet leftEyeResult = leftEyeStatement.executeQuery();
-
-                Eye rightEye = new Eye(
-                    rightEyeResult.getInt("patient_id"),
-                    rightEyeResult.getString("side").charAt(0),
-                    rightEyeResult.getString("lens"),
-                    rightEyeResult.getString("va_init"),
-                    rightEyeResult.getString("va_postop"),
-                    rightEyeResult.getString("va_2weeks"),
-                    rightEyeResult.getString("va_6weeks"),
-                    rightEyeResult.getString("surg_place"),
-                    rightEyeResult.getDate("surg_date"),
-                    rightEyeResult.getString("surg_type"),
-                    rightEyeResult.getString("surg_notes")
-                );
-
-                Eye leftEye = new Eye(
-                        leftEyeResult.getInt("patient_id"),
-                        leftEyeResult.getString("side").charAt(0),
-                        leftEyeResult.getString("lens"),
-                        leftEyeResult.getString("va_init"),
-                        leftEyeResult.getString("va_postop"),
-                        leftEyeResult.getString("va_2weeks"),
-                        leftEyeResult.getString("va_6weeks"),
-                        leftEyeResult.getString("surg_place"),
-                        leftEyeResult.getDate("surg_date"),
-                        leftEyeResult.getString("surg_type"),
-                        leftEyeResult.getString("surg_notes")
-                );
+                Eye leftEye = getEyeForPatient(conn, patient.getPatient_id(), 'L');
 
                 //create new person and add them to the array list
                 Person person = new Person(patient, rightEye, leftEye);
@@ -384,74 +366,166 @@ public class DatabaseService {
         }catch(SQLException ex) {
             ex.printStackTrace();
         }
-
         return people;
     }
 
     /**
      * Function to do a general search based on surgery and VA information
-     * @param surg_date the date of the surgery
-     * @param month boolean which indicates if the date represents a whole month (true) or a specific day (false)
-     * @param lens the eye lens
-     * @param va_final the final VA
-     * @param surg_type the surgery type
+     *
+     * @param surg_date  the date of the surgery
+     * @param month      boolean which indicates if the date represents a whole month (true) or a specific day (false)
+     * @param lens       the eye lens
+     * @param status     the patient status
+     * @param va_final1  the final VA of an eye
+     * @param va_final2  the final VA of another eye
+     * @param surg_type  the surgery type
      * @param surg_place the surgery place
      * @return an ArrayList of People who matched the search results
      */
-    public ArrayList<Person> generalSearch(Date surg_date ,boolean month, String lens, String va_final, String surg_type, String surg_place) {
+    public ArrayList<Person> generalSearch(Date surg_date, boolean month, String lens, String status, String va_final1, String va_final2, String surg_type, String surg_place) {
 
         ArrayList<Person> people = new ArrayList<>();
-        ArrayList<Integer> uniquePatients = new ArrayList<Integer>();
+        ArrayList<Integer> uniquePatients = new ArrayList<>();
 
-        if(DateUtils.isDefault(surg_date) && lens.equals("N/A") && va_final.equals("N/A") && surg_type.equals("N/A") && surg_place.equals("")) {
+        boolean doubleVASearch = false;
+        boolean va1Search = false;
+        boolean va2Search = false;
+
+        if(DateUtils.isDefault(surg_date) && lens.equals("N/A") && status.equals("N/A") && va_final1.equals("N/A") && va_final2.equals("N/A") && surg_type.equals("N/A") && surg_place.equals("")) {
             return null;
         }
-        //General SQL
-        String generalSQL = "SELECT * FROM Eye WHERE ";
 
-        if(!DateUtils.isDefault(surg_date)) {
-            if(month) {
-                generalSQL += "strftime('%Y-%m', surg_date / 1000, 'unixepoch') = ? AND ";
+        if(!va_final1.equals("N/A") && !va_final2.equals("N/A")) {
+            doubleVASearch = true;
+        } else if (!va_final1.equals("N/A")) {
+            va1Search = true;
+        } else if (!va_final2.equals("N/A")) {
+            va2Search = true;
+        }
+
+        //General SQL
+        String generalSQL;
+        //Search without status
+        if(status.equals("N/A")) {
+            //Search with two VAs
+            if(doubleVASearch) {
+                generalSQL = "SELECT Eye.* FROM (SELECT * FROM Eye WHERE Eye.va_final = ?)VA1, Eye ";
+                generalSQL += "WHERE Eye.va_final = ? AND Eye.patient_id = VA1.patient_id AND ";
             }
             else {
-                generalSQL += "surg_date = ? AND ";
+                generalSQL = "SELECT * FROM Eye WHERE ";
+            }
+        }
+        //Search with status
+        else {
+            //Search with 2 VAs
+            if(doubleVASearch) {
+                generalSQL = "SELECT Eye.* FROM (SELECT * FROM Eye WHERE Eye.va_final = ?)VA1, Eye ";
+                generalSQL += "Eye INNER JOIN Patient ON Eye.patient_id = Patient.patient_id ";
+                generalSQL += "WHERE Eye.va_final = ? AND Eye.patient_id = VA1.patient_id AND status = ? AND ";
+            }else {
+                generalSQL = "SELECT Eye.* FROM Eye INNER JOIN Patient ON Eye.patient_id = Patient.patient_id WHERE ";
+                generalSQL += "status = ? AND ";
+            }
+        }
+
+        if(va1Search || va2Search) {
+            generalSQL += "Eye.va_final = ? AND ";
+        }
+        if(!DateUtils.isDefault(surg_date)) {
+            if(month) {
+                if(doubleVASearch) {
+                    generalSQL += "(strftime('%Y-%m', Eye.surg_date / 1000, 'unixepoch') = ? OR strftime('%Y-%m', VA1.surg_date / 1000, 'unixepoch') = ?) AND";
+                }
+                else {
+                    generalSQL += "strftime('%Y-%m', Eye.surg_date / 1000, 'unixepoch') = ? AND ";
+                }
+            }
+            else {
+                if(doubleVASearch) {
+                    generalSQL += "(Eye.surg_date = ? OR VA1.surg_date = ?) AND ";
+                }
+                else {
+                    generalSQL += "Eye.surg_date = ? AND ";
+                }
             }
         }
         if(!lens.equals("N/A")) {
-            generalSQL += "lens = ? AND ";
-        }
-        if(!va_final.equals("N/A")) {
-            generalSQL += "va_final = ? AND ";
+            if(doubleVASearch) {
+                generalSQL += "(Eye.lens = ? OR VA1.lens = ?) AND ";
+            }
+            else {
+                generalSQL += "Eye.lens = ? AND ";
+            }
         }
         if(!surg_type.equals("N/A")) {
-            generalSQL += "surg_type = ? AND ";
+            if(doubleVASearch) {
+                generalSQL += "(Eye.surg_type = ? OR VA1.surg_type = ?) AND ";
+            }
+            else {
+                generalSQL += "Eye.surg_type = ? AND ";
+            }
         }
         if(!surg_place.equals("")) {
-            generalSQL += "surg_place = ? AND ";
+            if(doubleVASearch) {
+                generalSQL += "(Eye.surg_place = ? OR VA1.surg_place = ?) AND ";
+            }
+            else {
+                generalSQL += "Eye.surg_place = ? AND ";
+            }
         }
 
         generalSQL = generalSQL.substring(0,generalSQL.length()-5);
 
-        //Eye SQL
-        String rightEyeSQL = "SELECT * FROM Eye WHERE side = 'R' AND patient_id = ?";
-        String leftEyeSQL = "SELECT * FROM Eye WHERE side = 'L' AND patient_id = ?";
-
-        //Patient SQL
-        String patientSQL = "SELECT * FROM Patient WHERE patient_id = ?";
 
         try(Connection conn = this.connect();
-            PreparedStatement generalStatement = conn.prepareStatement(generalSQL);
-            PreparedStatement rightEyeStatement = conn.prepareStatement(rightEyeSQL);
-            PreparedStatement leftEyeStatement = conn.prepareStatement(leftEyeSQL);
-            PreparedStatement patientStatement = conn.prepareStatement(patientSQL)) {
+            PreparedStatement generalStatement = conn.prepareStatement(generalSQL)) {
 
             int param = 1;
 
+            //WITHOUT STATUS
+            if(status.equals("N/A")) {
+                //WITH DOUBLE VA
+                if(doubleVASearch) {
+                    generalStatement.setString(param, va_final1);
+                    param++;
+                    generalStatement.setString(param, va_final2);
+                    param++;
+                }
+            }
+            //WITH STATUS
+            else {
+                //WITH DOUBLE VA
+                if(doubleVASearch) {
+                    generalStatement.setString(param, va_final1);
+                    param++;
+                    generalStatement.setString(param, va_final2);
+                    param++;
+                    generalStatement.setString(param, status);
+                }
+                else {
+                    generalStatement.setString(param, status);
+                }
+                param++;
+            }
+
+            if(va1Search) {
+                generalStatement.setString(param, va_final1);
+                param++;
+            }
+            else if (va2Search){
+                generalStatement.setString(param, va_final2);
+                param++;
+            }
             //Set general parameters dynamically
             if(!DateUtils.isDefault(surg_date)) {
                 if(month) {
                     String strDate = surg_date.toString();
                     generalStatement.setString(param, strDate.substring(0,7));
+                    if(doubleVASearch) {
+                        param++;
+                        generalStatement.setString(param, strDate.substring(0,7));
+                    }
                 }
                 else {
                     generalStatement.setDate(param, surg_date);
@@ -461,22 +535,32 @@ public class DatabaseService {
             if(!lens.equals("N/A")) {
                 generalStatement.setString(param, lens);
                 param++;
-            }
-            if(!va_final.equals("N/A")) {
-                generalStatement.setString(param, va_final);
-                param++;
+                if(doubleVASearch) {
+                    generalStatement.setString(param, lens);
+                    param++;
+                }
             }
             if(!surg_type.equals("N/A")) {
                 generalStatement.setString(param, surg_type);
+                param++;
+                if(doubleVASearch) {
+                    generalStatement.setString(param, surg_type);
+                    param++;
+                }
             }
             if(!surg_place.equals("")) {
                 generalStatement.setString(param, surg_place);
+                if(doubleVASearch) {
+                    param++;
+                    generalStatement.setString(param, surg_place);
+                }
             }
+            System.out.println(generalStatement.toString());
 
             //Execute general query
             ResultSet generalResult = generalStatement.executeQuery();
 
-            boolean duplicate = false;
+            boolean duplicate;
             //Loop through results
             while(generalResult.next()) {
                 duplicate = false;
@@ -505,58 +589,16 @@ public class DatabaseService {
                 //Add unique patient ID to list
                 uniquePatients.add(generalResult.getInt("patient_id"));
 
-                patientStatement.setInt(1, eye.getPatient_id());
-                ResultSet patientResult = patientStatement.executeQuery();
-
-                //Find patient connected to the Eye
-                Patient patient = new Patient(
-                        patientResult.getInt("patient_id"),
-                        patientResult.getString("id_num"),
-                        patientResult.getString("surname"),
-                        patientResult.getString("initials"),
-                        patientResult.getDate("dob"),
-                        patientResult.getString("status"),
-                        patientResult.getString("contact"),
-                        patientResult.getString("alt_contact")
-                );
+                Patient patient = getPatientByID(conn, eye.getPatient_id());
 
                 //Find Left or Right eye depending on the search
                 if(eye.getSide() == 'R') {
-                    leftEyeStatement.setInt(1, eye.getPatient_id());
-                    ResultSet leftEyeResult = leftEyeStatement.executeQuery();
-
-                    Eye leftEye = new Eye(
-                        leftEyeResult.getInt("patient_id"),
-                        leftEyeResult.getString("side").charAt(0),
-                        leftEyeResult.getString("lens"),
-                        leftEyeResult.getString("va_init"),
-                        leftEyeResult.getString("va_postop"),
-                        leftEyeResult.getString("va_2weeks"),
-                        leftEyeResult.getString("va_6weeks"),
-                        leftEyeResult.getString("surg_place"),
-                        leftEyeResult.getDate("surg_date"),
-                        leftEyeResult.getString("surg_type"),
-                        leftEyeResult.getString("surg_notes")
-                    );
+                    Eye leftEye = getEyeForPatient(conn, eye.getPatient_id(), 'L');
                     Person person = new Person(patient, eye, leftEye);
                     people.add(person);
                 }
                 else {
-                    rightEyeStatement.setInt(1, eye.getPatient_id());
-                    ResultSet rightEyeResult = rightEyeStatement.executeQuery();
-                    Eye rightEye = new Eye(
-                        rightEyeResult.getInt("patient_id"),
-                        rightEyeResult.getString("side").charAt(0),
-                        rightEyeResult.getString("lens"),
-                        rightEyeResult.getString("va_init"),
-                        rightEyeResult.getString("va_postop"),
-                        rightEyeResult.getString("va_2weeks"),
-                        rightEyeResult.getString("va_6weeks"),
-                        rightEyeResult.getString("surg_place"),
-                        rightEyeResult.getDate("surg_date"),
-                        rightEyeResult.getString("surg_type"),
-                        rightEyeResult.getString("surg_notes")
-                    );
+                    Eye rightEye = getEyeForPatient(conn, eye.getPatient_id(), 'R');
                     Person person = new Person(patient, rightEye, eye);
                     people.add(person);
                 }
@@ -566,5 +608,68 @@ public class DatabaseService {
             ex.printStackTrace();
         }
         return people;
+    }
+
+    /**
+     * Function that retrieves a specific patient
+     *
+     * @param conn       the database connection
+     * @param patient_id the patient id
+     * @return the Patient
+     * @throws SQLException
+     */
+    private Patient getPatientByID(Connection conn, int patient_id) throws SQLException {
+        String patSQL = "SELECT * FROM Patient WHERE patient_id = ?";
+
+        PreparedStatement patStatement = conn.prepareStatement(patSQL);
+
+        patStatement.setInt(1, patient_id);
+
+        ResultSet rs = patStatement.executeQuery();
+
+        return new Patient(
+            rs.getInt("patient_id"),
+            rs.getString("id_num"),
+            rs.getString("surname"),
+            rs.getString("initials"),
+            rs.getDate("dob"),
+            rs.getString("status"),
+            rs.getString("contact"),
+            rs.getString("alt_contact")
+        );
+    }
+
+    /**
+     * Function that retrieves a specific eye from a patient id
+     *
+     * @param conn       the database connection
+     * @param patient_id the patient ID
+     * @param side       the eye side
+     * @return the Eye
+     * @throws SQLException
+     */
+    private Eye getEyeForPatient(Connection conn, int patient_id, char side) throws SQLException {
+        String eyeSQL = "SELECT * FROM Eye WHERE patient_id = ? AND side = ?";
+
+        PreparedStatement eyeStatement = conn.prepareStatement(eyeSQL);
+
+        eyeStatement.setInt(1, patient_id);
+        eyeStatement.setString(2, String.valueOf(side));
+
+        ResultSet rs = eyeStatement.executeQuery();
+
+        return new Eye(
+                rs.getInt("patient_id"),
+                rs.getString("side").charAt(0),
+                rs.getString("lens"),
+                rs.getString("va_init"),
+                rs.getString("va_postop"),
+                rs.getString("va_2weeks"),
+                rs.getString("va_6weeks"),
+                rs.getString("surg_place"),
+                rs.getDate("surg_date"),
+                rs.getString("surg_type"),
+                rs.getString("surg_notes")
+        );
     }
 }

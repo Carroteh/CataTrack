@@ -1,10 +1,7 @@
 package com.carrot.catatrack.controller;
 
 import com.carrot.catatrack.db.DatabaseService;
-import com.carrot.catatrack.model.Choices;
-import com.carrot.catatrack.model.DateUtils;
-import com.carrot.catatrack.model.Eye;
-import com.carrot.catatrack.model.Patient;
+import com.carrot.catatrack.model.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -144,40 +141,25 @@ public class AddPatientController implements Choices
                                         Date.valueOf(birthDate), chStatus.getValue(), txtContact.getText(),
                                         txtAltContact.getText());
 
-        //Insert patient into Database
-        int patientID = db.insertPatient(patient);
-
-        if(patientID != -1) {
-
-            //Create and insert Right and Left eye
-            LocalDate surgDateOD = DateUtils.getDate(dateSurg_OD);
-            Eye rightEye = new Eye(patientID, 'R', chLens_OD.getValue(), chInitialVA_OD.getValue(), chPostopVA_OD.getValue(),
-                    ch2WeekVA_OD.getValue(), ch6WeekVA_OD.getValue(), txtSurgPlace_OD.getText(), Date.valueOf(surgDateOD),
-                    chSurgType_OD.getValue(),txtSurgNotes_OD.getText());
-
-            int rCode = db.insertEye(rightEye);
-
-            LocalDate surgDateOS = DateUtils.getDate(dateSurg_OS);
-            Eye leftEye = new Eye(patientID, 'L', chLens_OS.getValue(), chInitialVA_OS.getValue(), chPostopVA_OS.getValue(),
-                    ch2WeekVA_OS.getValue(), ch6WeekVA_OS.getValue(), txtSurgPlace_OS.getText(), Date.valueOf(surgDateOS),
-                    chSurgType_OS.getValue(),txtSurgNotes_OS.getText());
+        //Create and insert Right and Left eye
+        LocalDate surgDateOD = DateUtils.getDate(dateSurg_OD);
+        Eye rightEye = new Eye('R', chLens_OD.getValue(), chInitialVA_OD.getValue(), chPostopVA_OD.getValue(),
+                ch2WeekVA_OD.getValue(), ch6WeekVA_OD.getValue(), txtSurgPlace_OD.getText(), Date.valueOf(surgDateOD),
+                chSurgType_OD.getValue(),txtSurgNotes_OD.getText());
 
 
-            int lCode = db.insertEye(leftEye);
+        LocalDate surgDateOS = DateUtils.getDate(dateSurg_OS);
+        Eye leftEye = new Eye('L', chLens_OS.getValue(), chInitialVA_OS.getValue(), chPostopVA_OS.getValue(),
+                ch2WeekVA_OS.getValue(), ch6WeekVA_OS.getValue(), txtSurgPlace_OS.getText(), Date.valueOf(surgDateOS),
+                chSurgType_OS.getValue(),txtSurgNotes_OS.getText());
 
-            //Display useful response message
-            if(rCode == -1) {
-                lblStatus.setText("Error Right Eye.");
-            }
-            else if(lCode == -1) {
-                lblStatus.setText("Error Left Eye.");
-            }
-            else {
-                lblStatus.setText("Success!");
-                clearFields();
-            }
-        }
-        else {
+        Person person = new Person(patient, rightEye, leftEye);
+
+        boolean status = db.insertPerson(person);
+
+        if(status) {
+            lblStatus.setText("Success!");
+        } else {
             lblStatus.setText("Something went wrong.");
         }
     }

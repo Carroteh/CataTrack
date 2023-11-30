@@ -24,7 +24,6 @@ public class SearchController implements Choices
 {
     @javafx.fxml.FXML
     private AnchorPane root;
-    @javafx.fxml.FXML
     private DatabaseService db;
     private Stage stage;
     @FXML
@@ -32,17 +31,11 @@ public class SearchController implements Choices
     @FXML
     private Label lblSurgDate;
     @FXML
-    private Label lblDOB;
-    @FXML
     private ChoiceBox<String> chLensFilter;
-    @FXML
-    private ChoiceBox<String> chVAFilter;
     @FXML
     private TextField txtSurname;
     @FXML
     private TextField txtInitials;
-    @FXML
-    private DatePicker dateBirth;
     @FXML
     private TextField txtID;
     @FXML
@@ -56,13 +49,15 @@ public class SearchController implements Choices
     @FXML
     private ChoiceBox<String> chStatus;
     @FXML
-    private TextField txtContact;
-    @FXML
-    private TextField txtAltContact;
-    @FXML
     private ChoiceBox<String> chSurgTypeFilter;
     @FXML
     private TextField txtSurgPlaceFilter;
+    @FXML
+    private MenuItem itmAddPatient;
+    @FXML
+    private ChoiceBox<String> chVAFilter1;
+    @FXML
+    private ChoiceBox<String> chVAFilter2;
 
 
     private void addPersonToAccordion(Person person) {
@@ -74,17 +69,19 @@ public class SearchController implements Choices
     public void initialize() {
         //Setup choice boxes and choices
         chStatus.setItems(FXCollections.observableArrayList(Choices.status));
-        chStatus.setValue("N/A");
         chLensFilter.setItems(FXCollections.observableArrayList(Choices.Lens));
-        chVAFilter.setItems(FXCollections.observableArrayList(Choices.VAList));
+        chVAFilter1.setItems(FXCollections.observableArrayList(Choices.VAList));
+        chVAFilter2.setItems(FXCollections.observableArrayList(Choices.VAList));
         chSurgTypeFilter.setItems(FXCollections.observableArrayList(Choices.surgeryType));
+
+        chStatus.setValue("N/A");
         chLensFilter.setValue("N/A");
-        chVAFilter.setValue("N/A");
+        chVAFilter1.setValue("N/A");
+        chVAFilter2.setValue("N/A");
         chSurgTypeFilter.setValue("N/A");
 
         db = new DatabaseService();
 
-        lblDOB.setId("Response");
         lblSurgDate.setId("Response");
     }
 
@@ -101,7 +98,7 @@ public class SearchController implements Choices
     public void doPatientSearch(ActionEvent actionEvent) {
         clearResults();
 
-        ArrayList<Person> results = db.patientSearch(txtSurname.getText(), txtInitials.getText(), Date.valueOf(DateUtils.getDate(dateBirth)), txtID.getText(), chStatus.getValue(), txtContact.getText(), txtAltContact.getText());
+        ArrayList<Person> results = db.patientSearch(txtSurname.getText(), txtInitials.getText(),Date.valueOf("1000-01-01"), txtID.getText(), "N/A", "", "");
 
         //Add the found patients to the list
         if(results != null) {
@@ -116,7 +113,7 @@ public class SearchController implements Choices
     public void doGeneralSearch(ActionEvent actionEvent) {
         clearResults();
 
-        ArrayList<Person> results = db.generalSearch(Date.valueOf(DateUtils.getDate(dateSurgFilter)), chkMonth.isSelected(), chLensFilter.getValue(), chVAFilter.getValue(), chSurgTypeFilter.getValue(), txtSurgPlaceFilter.getText());
+        ArrayList<Person> results = db.generalSearch(Date.valueOf(DateUtils.getDate(dateSurgFilter)), chkMonth.isSelected(), chLensFilter.getValue(), chStatus.getValue() ,chVAFilter1.getValue(), chVAFilter2.getValue(), chSurgTypeFilter.getValue(), txtSurgPlaceFilter.getText());
 
         if(results != null) {
             for(Person person : results) {

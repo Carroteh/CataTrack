@@ -114,7 +114,8 @@ public class PatientPane extends TitledPane {
                     txtSurgNotes_OS.getText()
             );
 
-            boolean success = db.editPatient(updatedPatient, updatedRightEye, updatedLeftEye);
+            Person person = new Person(updatedPatient, updatedRightEye, updatedLeftEye);
+            boolean success = db.editPatient(person);
 
             if(success) {
                 setResponse("Success!");
@@ -188,8 +189,8 @@ public class PatientPane extends TitledPane {
         txtSurgPlace_OS.setText(leftEye.getSurg_place());
         txtSurgNotes_OS.setText(leftEye.getSurg_notes());
 
-        this.setText(patient.getSurname() + " " + patient.getInitials() + ", " + patient.getContact() + ", "
-                        + patient.getDob() + ", " + rightEye.getVa_final() + " | " + leftEye.getVa_final());
+        this.setText(patient.getSurname() + " " + patient.getInitials() + ", "
+                        + patient.getDob() + ", " + rightEye.getVa_final() + " | " + leftEye.getVa_final() + ", " + patient.getContact());
     }
 
     /**

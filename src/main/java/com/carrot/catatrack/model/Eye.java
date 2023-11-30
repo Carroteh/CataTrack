@@ -24,6 +24,33 @@ public class Eye {
     public Eye() {}
 
     /**
+     * Constructor without patient_id
+     * @param side the eye in question, Left/Right -> L/R
+     * @param lens the lens status of the eye
+     * @param va_init the initial visual acuity
+     * @param va_postop the visual acuity post surgery
+     * @param va_2weeks visual acuity 2 weeks after surgery
+     * @param va_6weeks visual acuity 6 weeks after surgery
+     * @param surg_place location that the surgery took place
+     * @param surg_date date of the surgery
+     * @param surg_type type of surgery
+     * @param surg_notes notes related to the surgery
+     */
+    public Eye(char side, String lens, String va_init, String va_postop, String va_2weeks, String va_6weeks,String surg_place, Date surg_date, String surg_type, String surg_notes) {
+        this.side = side;
+        this.lens = lens;
+        this.va_init = va_init;
+        this.va_postop = va_postop;
+        this.va_2weeks = va_2weeks;
+        this.va_6weeks = va_6weeks;
+        this.va_final = determineFinalVA(va_init, va_postop, va_2weeks, va_6weeks);
+        this.surg_place = surg_place;
+        this.surg_date = surg_date;
+        this.surg_type = surg_type;
+        this.surg_notes = surg_notes;
+    }
+
+    /**
      * Full constructor for the Eye class
      * @param patient_id the patient ID
      * @param side the eye in question, Left/Right -> L/R
