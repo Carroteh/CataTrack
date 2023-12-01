@@ -38,7 +38,7 @@ public class PatientPane extends TitledPane {
     private ChoiceBox<String> chPostopVA_OD;
     private ChoiceBox<String> ch2WeeksVA_OD;
     private ChoiceBox<String> ch6WeeksVA_OD;
-    private ChoiceBox<String> chFinalVA_OD;
+    private TextField txtFinalVA_OD;
     private DatePicker dateSurg_OD;
     private ChoiceBox<String> chSurgType_OD;
     private TextField txtSurgPlace_OD;
@@ -50,7 +50,7 @@ public class PatientPane extends TitledPane {
     private ChoiceBox<String> chPostopVA_OS;
     private ChoiceBox<String> ch2WeeksVA_OS;
     private ChoiceBox<String> ch6WeeksVA_OS;
-    private ChoiceBox<String> chFinalVA_OS;
+    private TextField txtFinalVA_OS;
     private DatePicker dateSurg_OS;
     private ChoiceBox<String> chSurgType_OS;
     private TextField txtSurgPlace_OS;
@@ -156,7 +156,7 @@ public class PatientPane extends TitledPane {
         chPostopVA_OD.setValue(rightEye.getVa_postop());
         ch2WeeksVA_OD.setValue(rightEye.getVa_2weeks());
         ch6WeeksVA_OD.setValue(rightEye.getVa_6weeks());
-        chFinalVA_OD.setValue(rightEye.getVa_final());
+        txtFinalVA_OD.setText(rightEye.getVa_final());
 
         if(!DateUtils.isDefault(rightEye.getSurg_date())) {
             dateSurg_OD.setValue(rightEye.getSurg_date().toLocalDate());
@@ -176,7 +176,7 @@ public class PatientPane extends TitledPane {
         chPostopVA_OS.setValue(leftEye.getVa_postop());
         ch2WeeksVA_OS.setValue(leftEye.getVa_2weeks());
         ch6WeeksVA_OS.setValue(leftEye.getVa_6weeks());
-        chFinalVA_OS.setValue(leftEye.getVa_final());
+        txtFinalVA_OS.setText(leftEye.getVa_final());
 
         if(!DateUtils.isDefault(leftEye.getSurg_date())) {
             dateSurg_OS.setValue(leftEye.getSurg_date().toLocalDate());
@@ -189,8 +189,9 @@ public class PatientPane extends TitledPane {
         txtSurgPlace_OS.setText(leftEye.getSurg_place());
         txtSurgNotes_OS.setText(leftEye.getSurg_notes());
 
-        this.setText(patient.getSurname() + " " + patient.getInitials() + ", "
-                        + patient.getDob() + ", " + rightEye.getVa_final() + " | " + leftEye.getVa_final() + ", " + patient.getContact());
+        String dob = patient.getId_num().length() != 6 && patient.getId_num().length() != 13  ? "" : patient.getId_num().substring(0, 6);
+        this.setText(patient.getSurname() + " " + patient.getInitials() + " ~ "
+                         + dob + " ~ " + rightEye.getVa_final() + " | " + leftEye.getVa_final() + " ~ " + patient.getContact());
     }
 
     /**
@@ -237,7 +238,7 @@ public class PatientPane extends TitledPane {
         genGrid.add(new HBox(new Label("Birthdate:") , dateBirth),1,1);
         genGrid.add(new HBox(new Label("Contact 2:") , txtAltContact),1,2);
         genGrid.add(new HBox(new Label("Status:") , chStatus),2,0);
-        genGrid.add(btnSave,2,1);
+        genGrid.add(new HBox(new Label(""), btnSave),2,1);
         genGrid.add(new HBox(new Label("Response:"),lblResponse), 2, 2);
 
 
@@ -248,13 +249,15 @@ public class PatientPane extends TitledPane {
         chPostopVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
         ch2WeeksVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
         ch6WeeksVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
-        chFinalVA_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
+        txtFinalVA_OD = new TextField();
+        txtFinalVA_OD.setEditable(false);
 
         chInitialVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
         chPostopVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
         ch2WeeksVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
         ch6WeeksVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
-        chFinalVA_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.VAList));
+        txtFinalVA_OS = new TextField();
+        txtFinalVA_OS.setEditable(false);
 
         dateSurg_OD = new DatePicker();
         dateSurg_OS = new DatePicker();
@@ -276,7 +279,7 @@ public class PatientPane extends TitledPane {
         ODGrid.add(new HBox(new Label("Postop:") , chPostopVA_OD),0,3);
         ODGrid.add(new HBox(new Label("2 Weeks:") , ch2WeeksVA_OD),0,4);
         ODGrid.add(new HBox(new Label("6 Weeks:") , ch6WeeksVA_OD),0,5);
-        ODGrid.add(new HBox(new Label("Final:") , chFinalVA_OD),0,6);
+        ODGrid.add(new HBox(new Label("Final:") , txtFinalVA_OD),0,6);
         ODGrid.add(new Label("Surgery"),1,1);
         ODGrid.add(new HBox(new Label("Date") , dateSurg_OD),1,2);
         ODGrid.add(new HBox(new Label("Type:") , chSurgType_OD),1,3);
@@ -289,7 +292,7 @@ public class PatientPane extends TitledPane {
         OSGrid.add(new HBox(new Label("Postop:") , chPostopVA_OS),0,3);
         OSGrid.add(new HBox(new Label("2 Weeks:") , ch2WeeksVA_OS),0,4);
         OSGrid.add(new HBox(new Label("6 Weeks:") , ch6WeeksVA_OS),0,5);
-        OSGrid.add(new HBox(new Label("Final:") , chFinalVA_OS),0,6);
+        OSGrid.add(new HBox(new Label("Final:") , txtFinalVA_OS),0,6);
         OSGrid.add(new Label("Surgery"),1,1);
         OSGrid.add(new HBox(new Label("Date") , dateSurg_OS),1,2);
         OSGrid.add(new HBox(new Label("Type:") , chSurgType_OS),1,3);

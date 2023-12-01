@@ -26,7 +26,7 @@ public class Main extends Application {
         scene.getStylesheets().add(String.valueOf(stylesheet));
         stage.setTitle("CataTrack");
         stage.setScene(scene);
-        stage.setMaxWidth(1200);
+        stage.setMaxWidth(1220);
         stage.show();
     }
 }

@@ -39,9 +39,30 @@ public class DatabaseService {
         return conn;
     }
 
+    public int getNumPatients() {
+        int numPatients = 0;
+
+        String SQL = "SELECT COUNT(patient_id) as count FROM Patient";
+
+        try(Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+
+            ResultSet rs = pstmt.executeQuery();
+
+            numPatients = rs.getInt("count");
+
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return  numPatients;
+    }
+
     public boolean insertPerson(Person person) {
-        int patStatus = insertPatient(person.getPatient());
-        if (patStatus != -1) {
+        int PK = insertPatient(person.getPatient());
+        if (PK != -1) {
+            person.getRightEye().setPatient_id(PK);
+            person.getLeftEye().setPatient_id(PK);
             int rEye = insertEye(person.getRightEye());
             int lEye = insertEye(person.getLeftEye());
             if (rEye == -1 || lEye == -1) {
@@ -391,7 +412,7 @@ public class DatabaseService {
         boolean va1Search = false;
         boolean va2Search = false;
 
-        if(DateUtils.isDefault(surg_date) && lens.equals("N/A") && status.equals("N/A") && va_final1.equals("N/A") && va_final2.equals("N/A") && surg_type.equals("N/A") && surg_place.equals("")) {
+        if(DateUtils.isDefault(surg_date) && lens.equals("N/A") && status.equals("N/A") && va_final1.equals("N/A") && va_final2.equals("N/A") && surg_type.equals("N/A") && surg_place.equals("N/A")) {
             return null;
         }
 
@@ -466,7 +487,7 @@ public class DatabaseService {
                 generalSQL += "Eye.surg_type = ? AND ";
             }
         }
-        if(!surg_place.equals("")) {
+        if(!surg_place.equals("N/A")) {
             if(doubleVASearch) {
                 generalSQL += "(Eye.surg_place = ? OR VA1.surg_place = ?) AND ";
             }
@@ -548,7 +569,7 @@ public class DatabaseService {
                     param++;
                 }
             }
-            if(!surg_place.equals("")) {
+            if(!surg_place.equals("N/A")) {
                 generalStatement.setString(param, surg_place);
                 if(doubleVASearch) {
                     param++;

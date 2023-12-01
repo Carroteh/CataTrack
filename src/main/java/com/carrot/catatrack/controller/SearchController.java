@@ -25,7 +25,6 @@ public class SearchController implements Choices
     @javafx.fxml.FXML
     private AnchorPane root;
     private DatabaseService db;
-    private Stage stage;
     @FXML
     private Accordion patientAccordion;
     @FXML
@@ -47,17 +46,21 @@ public class SearchController implements Choices
     @FXML
     private Button btnGeneralSearch;
     @FXML
-    private ChoiceBox<String> chStatus;
-    @FXML
     private ChoiceBox<String> chSurgTypeFilter;
-    @FXML
-    private TextField txtSurgPlaceFilter;
     @FXML
     private MenuItem itmAddPatient;
     @FXML
     private ChoiceBox<String> chVAFilter1;
     @FXML
     private ChoiceBox<String> chVAFilter2;
+    @FXML
+    private ChoiceBox<String> chStatusFilter;
+    @FXML
+    private ChoiceBox<String> chPlaceFilter;
+    @FXML
+    private Label lblNoResults;
+    @FXML
+    private Label lblNoPatients;
 
 
     private void addPersonToAccordion(Person person) {
@@ -68,27 +71,30 @@ public class SearchController implements Choices
     @javafx.fxml.FXML
     public void initialize() {
         //Setup choice boxes and choices
-        chStatus.setItems(FXCollections.observableArrayList(Choices.status));
+        chStatusFilter.setItems(FXCollections.observableArrayList(Choices.status));
         chLensFilter.setItems(FXCollections.observableArrayList(Choices.Lens));
         chVAFilter1.setItems(FXCollections.observableArrayList(Choices.VAList));
         chVAFilter2.setItems(FXCollections.observableArrayList(Choices.VAList));
         chSurgTypeFilter.setItems(FXCollections.observableArrayList(Choices.surgeryType));
+        chPlaceFilter.setItems(FXCollections.observableArrayList(Choices.surgPlaces));
 
-        chStatus.setValue("N/A");
+        chStatusFilter.setValue("N/A");
         chLensFilter.setValue("N/A");
         chVAFilter1.setValue("N/A");
         chVAFilter2.setValue("N/A");
         chSurgTypeFilter.setValue("N/A");
+        chPlaceFilter.setValue("N/A");
+        lblSurgDate.setId("Response");
 
         db = new DatabaseService();
 
-        lblSurgDate.setId("Response");
+        lblNoPatients.setText(db.getNumPatients() + " Patients");
     }
 
     @javafx.fxml.FXML
     public void goToAddPatient(ActionEvent actionEvent) throws IOException {
         //Change view to addPatientView.fxml
-        stage = (Stage) root.getScene().getWindow();
+        Stage stage = (Stage) root.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/views/addPatientView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setScene(scene);
@@ -106,28 +112,23 @@ public class SearchController implements Choices
                 addPersonToAccordion(person);
             }
         }
-        clearDatePicker();
     }
 
     @FXML
     public void doGeneralSearch(ActionEvent actionEvent) {
         clearResults();
 
-        ArrayList<Person> results = db.generalSearch(Date.valueOf(DateUtils.getDate(dateSurgFilter)), chkMonth.isSelected(), chLensFilter.getValue(), chStatus.getValue() ,chVAFilter1.getValue(), chVAFilter2.getValue(), chSurgTypeFilter.getValue(), txtSurgPlaceFilter.getText());
+        ArrayList<Person> results = db.generalSearch(Date.valueOf(DateUtils.getDate(dateSurgFilter)), chkMonth.isSelected(), chLensFilter.getValue(), chStatusFilter.getValue() ,chVAFilter1.getValue(), chVAFilter2.getValue(), chSurgTypeFilter.getValue(), chPlaceFilter.getValue());
 
         if(results != null) {
             for(Person person : results) {
                 addPersonToAccordion(person);
             }
+            lblNoResults.setText(results.size() + " Results");
         }
-        clearDatePicker();
     }
 
     private void clearResults() {
         patientAccordion.getPanes().clear();
-    }
-
-    private void clearDatePicker() {
-
     }
 }
