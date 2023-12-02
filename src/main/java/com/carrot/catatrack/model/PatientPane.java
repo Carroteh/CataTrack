@@ -28,7 +28,6 @@ public class PatientPane extends TitledPane {
     private TextField txtInitials;
     private TextField txtContact;
     private TextField txtAltContact;
-    private DatePicker dateBirth;
     private ChoiceBox<String> chStatus;
     private Label lblResponse;
 
@@ -80,7 +79,7 @@ public class PatientPane extends TitledPane {
                     txtID.getText(),
                     txtSurname.getText(),
                     txtInitials.getText(),
-                    Date.valueOf(DateUtils.getDate(dateBirth)),
+                    Date.valueOf("1000-01-01"),
                     chStatus.getValue(),
                     txtContact.getText(),
                     txtAltContact.getText()
@@ -138,13 +137,6 @@ public class PatientPane extends TitledPane {
         txtSurname.setText(patient.getSurname());
         txtID.setText(patient.getId_num());
         txtInitials.setText(patient.getInitials());
-
-        if(!DateUtils.isDefault(patient.getDob())) {
-            dateBirth.setValue(patient.getDob().toLocalDate());
-        }
-        else {
-            dateBirth.setValue(null);
-        }
 
         txtContact.setText(patient.getContact());
         txtAltContact.setText(patient.getAlt_contact());
@@ -223,7 +215,6 @@ public class PatientPane extends TitledPane {
         txtID = new TextField();
         txtContact = new TextField();
         txtAltContact = new TextField();
-        dateBirth = new DatePicker();
         chStatus = new ChoiceBox<>(FXCollections.observableArrayList(Choices.status));
         lblResponse = new Label("");
         lblResponse.setId("Response");
@@ -232,14 +223,13 @@ public class PatientPane extends TitledPane {
 
         //Setup general info
         genGrid.add(new HBox(new Label("Surname:") , txtSurname),0,0);
-        genGrid.add(new HBox(new Label("Initials:"), txtInitials),0,1);
-        genGrid.add(new HBox(new Label("Contact 1:") , txtContact),0,2);
-        genGrid.add(new HBox(new Label("ID:") , txtID),1,0);
-        genGrid.add(new HBox(new Label("Birthdate:") , dateBirth),1,1);
-        genGrid.add(new HBox(new Label("Contact 2:") , txtAltContact),1,2);
-        genGrid.add(new HBox(new Label("Status:") , chStatus),2,0);
-        genGrid.add(new HBox(new Label(""), btnSave),2,1);
-        genGrid.add(new HBox(new Label("Response:"),lblResponse), 2, 2);
+        genGrid.add(new HBox(new Label("Contact 1:") , txtContact),0,1);
+        genGrid.add(new HBox(new Label("ID:") , txtID),0,2);
+        genGrid.add(new HBox(new Label("Initials:"), txtInitials),1,0);
+        genGrid.add(new HBox(new Label("Contact 2:") , txtAltContact),1,1);
+        genGrid.add(new HBox(new Label("Status:") , chStatus),1,2);
+        genGrid.add(new HBox(new Label(""), btnSave),2,0);
+        genGrid.add(new HBox(new Label("Response:"),lblResponse), 2, 1);
 
 
         vBox.getChildren().add(genGrid);

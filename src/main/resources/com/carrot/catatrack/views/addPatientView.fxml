@@ -42,6 +42,7 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                           </rowConstraints>
                            <children>
                               <Label text="Surname:" GridPane.rowIndex="1">
@@ -52,41 +53,36 @@
                                  <font>
                                     <Font size="13.0" />
                                  </font></Label>
-                              <Label text="ID:" GridPane.columnIndex="6" GridPane.rowIndex="1">
+                              <Label text="ID:" GridPane.rowIndex="3">
                                  <font>
                                     <Font size="13.0" />
                                  </font></Label>
                               <TextField fx:id="txtSurname" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <TextField fx:id="txtInitials" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                              <TextField fx:id="txtID" GridPane.columnIndex="7" GridPane.rowIndex="1" />
-                              <Label text="Birthdate:" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                              <TextField fx:id="txtID" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label text="Status:" GridPane.columnIndex="3" GridPane.rowIndex="3">
                                  <font>
                                     <Font size="13.0" />
                                  </font></Label>
-                              <DatePicker fx:id="dateBirth" prefHeight="25.0" prefWidth="214.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                              <Label text="Status:" GridPane.rowIndex="3">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font></Label>
-                              <ChoiceBox fx:id="chStatus" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <ChoiceBox fx:id="chStatus" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
                               <Label text="General">
                                  <font>
                                     <Font name="System Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#AddPatient" prefHeight="66.0" prefWidth="150.0" text="ADD" GridPane.columnIndex="7" GridPane.rowIndex="2" />
-                              <Label text="Status:" GridPane.columnIndex="6" GridPane.rowIndex="3">
+                              <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#AddPatient" prefHeight="66.0" prefWidth="150.0" text="ADD" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                              <Label prefHeight="3.0" prefWidth="39.0" text="Status:" GridPane.columnIndex="6" GridPane.rowIndex="2">
                                  <font>
                                     <Font size="13.0" />
                                  </font></Label>
-                              <Label fx:id="lblStatus" text="-" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                              <Label fx:id="lblStatus" minWidth="150.0" prefHeight="17.0" prefWidth="152.0" text="-" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                               <Label text="Contact 1:" GridPane.rowIndex="2" />
                               <TextField fx:id="txtContact" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <TextField fx:id="txtAltContact" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                               <Label text="Contact 2:" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                            </children>
                            <padding>
-                              <Insets bottom="20.0" left="130.0" right="140.0" top="20.0" />
+                              <Insets bottom="20.0" left="160.0" right="110.0" top="20.0" />
                            </padding>
                         </GridPane>
                      </children>

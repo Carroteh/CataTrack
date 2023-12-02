@@ -147,11 +147,8 @@ public class AddPatientController implements Choices
 
         DatabaseService db = new DatabaseService();
 
-        //Create new Patient
-        LocalDate birthDate = DateUtils.getDate(dateBirth);
-
         Patient patient = new Patient(txtID.getText(), txtSurname.getText(), txtInitials.getText(),
-                                        Date.valueOf(birthDate), chStatus.getValue(), txtContact.getText(),
+                                        Date.valueOf("1000-01-01"), chStatus.getValue(), txtContact.getText(),
                                         txtAltContact.getText());
 
         //Create and insert Right and Left eye
@@ -190,8 +187,6 @@ public class AddPatientController implements Choices
         txtContact.setText("");
         txtAltContact.setText("");
         txtID.setText("");
-        dateBirth.setValue(null);
-        dateBirth.getEditor().setText("");
         chLens_OD.setValue("N/A");
         chInitialVA_OD.setValue("N/A");
         chPostopVA_OD.setValue("N/A");

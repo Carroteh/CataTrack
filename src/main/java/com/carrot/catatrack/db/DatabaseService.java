@@ -323,8 +323,12 @@ public class DatabaseService {
     public ArrayList<Person> patientSearch(String surname, String initials, Date dob, String id, String status, String contact, String alt_contact) {
         ArrayList<Person> people = new ArrayList<>();
 
+        String pseudophakic = "Bilateral pseudophakic";
+
         //Query
         String patientSQL = "SELECT * FROM Patient WHERE ";
+
+        patientSQL += "status <> ? AND ";
 
         if(surname.equals("") && initials.equals("") && DateUtils.isDefault(dob) && status.equals("N/A") && contact.equals("") && alt_contact.equals("") && id.equals("")) {
             return null;
@@ -359,11 +363,14 @@ public class DatabaseService {
 
         patientSQL = patientSQL.substring(0,patientSQL.length()-5);
 
+
         try(Connection conn = this.connect();
             PreparedStatement patientStatement = conn.prepareStatement(patientSQL)) {
 
             int param = 1;
 
+            patientStatement.setString(param, pseudophakic);
+            param++;
             //Create Prepared Statement
             if (!surname.equals("")) {
                 patientStatement.setString(param, surname);
