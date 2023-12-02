@@ -126,5 +126,4 @@ public class Patient {
         this.alt_contact = alt_contact;
     }
 
-
 }

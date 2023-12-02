@@ -1,9 +1,8 @@
 package com.carrot.catatrack.db;
 
-import com.carrot.catatrack.model.DateUtils;
-import com.carrot.catatrack.model.Eye;
-import com.carrot.catatrack.model.Patient;
-import com.carrot.catatrack.model.Person;
+import com.carrot.catatrack.model.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,6 +13,8 @@ import java.util.ArrayList;
  * Class that is used to interact with the database
  */
 public class DatabaseService {
+
+    public static final Logger logger = LogManager.getLogger(DatabaseService.class);
 
     /**
      * No args contructor for the Database service
@@ -27,22 +28,23 @@ public class DatabaseService {
      * @return Connection object
      */
     private Connection connect() {
-        //URL to database
-//        URL url = getClass().getResource("C:/Database/catatrack.db");
-//        System.out.println(url);
         Connection conn = null;
         try {
             conn = DriverManager.getConnection("jdbc:sqlite:C:/Database/catatrack.db");
         } catch (SQLException ex) {
+            logger.error("Could not connect to DB, {}", ex.getMessage());
             ex.printStackTrace();
         }
         return conn;
     }
 
     public int getNumPatients() {
+        logger.info("Getting number of patients.");
+
         int numPatients = 0;
 
         String SQL = "SELECT COUNT(patient_id) as count FROM Patient";
+        logger.info("SQL: {}", SQL);
 
         try(Connection conn = this.connect();
             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
@@ -53,22 +55,28 @@ public class DatabaseService {
 
         } catch(SQLException ex) {
             ex.printStackTrace();
+            logger.error("{}", ex.getMessage());
         }
-
+        logger.info("RESULT {}", numPatients);
         return  numPatients;
     }
 
     public boolean insertPerson(Person person) {
+        logger.info("Inserting Person");
         int PK = insertPatient(person.getPatient());
         if (PK != -1) {
+            logger.info("Successfully inserted patient.");
             person.getRightEye().setPatient_id(PK);
             person.getLeftEye().setPatient_id(PK);
             int rEye = insertEye(person.getRightEye());
             int lEye = insertEye(person.getLeftEye());
             if (rEye == -1 || lEye == -1) {
+                logger.error("Error while inserting eye.");
                 return false;
             }
+            logger.info("Successfully inserted eyes.");
         } else {
+            logger.error("Error while inserting patient.");
             return false;
         }
         return true;
@@ -81,6 +89,8 @@ public class DatabaseService {
      * @return the patients primary key (row ID) or -1 for failure
      */
     private int insertPatient(Patient patient) {
+        logger.info("Inserting patient");
+
         int PK = 0;
 
         //SQL statement
@@ -100,18 +110,21 @@ public class DatabaseService {
             pstmt.setString(6, patient.getContact());
             pstmt.setString(7, patient.getAlt_contact());
 
+            logger.info("SQL {}", pstmt.toString());
+
             pstmt.executeUpdate();
             ResultSet rs = pkstmt.executeQuery();
 
             while (rs.next()) {
                 PK = rs.getInt(1);
+                logger.info("Returned PK: {}", PK);
             }
 
         } catch (SQLException e) {
+            logger.error("{}", e.getMessage());
             e.printStackTrace();
             PK = -1;
         }
-
         return PK;
     }
 
@@ -122,6 +135,8 @@ public class DatabaseService {
      * @return the Primary Key of the new record
      */
     private int insertEye(Eye eye) {
+        logger.info("Inserting eye");
+
         int PK = 0;
 
         //SQL statement
@@ -146,9 +161,12 @@ public class DatabaseService {
             pstmt.setString(11, eye.getSurg_type());
             pstmt.setString(12, eye.getSurg_notes());
 
+            logger.info("SQL: {}", pstmt.toString());
+
             PK = pstmt.executeUpdate();
 
         } catch (SQLException ex) {
+            logger.error("{}", ex.getMessage());
             PK = -1;
             ex.printStackTrace();
         }
@@ -163,6 +181,8 @@ public class DatabaseService {
      * @return true for success, false for failure
      */
     public boolean editPatient(Person person) {
+        logger.info("Updating patient.");
+
         String patientSQL = """
                     UPDATE Patient SET
                     id_num = ? ,
@@ -218,16 +238,23 @@ public class DatabaseService {
             pstmt.setString(7, person.getPatient().getAlt_contact());
             pstmt.setInt(8, person.getPatient().getPatient_id());
 
+            logger.info("SQL: {}", pstmt.toString());
+
             pstmt.executeUpdate();
 
         } catch (SQLException ex) {
+            logger.error("{}", ex.getMessage());
             ex.printStackTrace();
             return false;
         }
 
+        logger.info("Successfully updated patient.");
+
         //Update Right Eye
         try(Connection conn = this.connect();
             PreparedStatement pstmt = conn.prepareStatement(rEyeSQL); ) {
+
+            logger.info("Updating Right eye.");
 
             pstmt.setString(1, person.getRightEye().getLens());
             pstmt.setString(2,  person.getRightEye().getVa_init());
@@ -242,9 +269,12 @@ public class DatabaseService {
             pstmt.setInt(11,  person.getPatient().getPatient_id());
             pstmt.setString(12, String.valueOf('R'));
 
+            logger.info("SQL: {}", pstmt.toString());
+
             pstmt.executeUpdate();
 
         } catch (SQLException ex) {
+            logger.error("{}", ex.getMessage());
             ex.printStackTrace();
             return false;
         }
@@ -252,6 +282,8 @@ public class DatabaseService {
         //Update Left Eye
         try(Connection conn = this.connect();
             PreparedStatement pstmt = conn.prepareStatement(lEyeSQL); ) {
+
+            logger.info("Updating left eye.");
 
             pstmt.setString(1, person.getLeftEye().getLens());
             pstmt.setString(2, person.getLeftEye().getVa_init());
@@ -266,9 +298,12 @@ public class DatabaseService {
             pstmt.setInt(11, person.getPatient().getPatient_id());
             pstmt.setString(12, String.valueOf('L'));
 
+            logger.info("SQL: {}", pstmt.toString());
+
             pstmt.executeUpdate();
 
         } catch (SQLException ex) {
+            logger.error("{}", ex.getMessage());
             ex.printStackTrace();
             return false;
         }
@@ -357,11 +392,16 @@ public class DatabaseService {
                 patientStatement.setString(param, id);
             }
 
+            logger.info("SQL: {}", patientStatement.toString());
+
             //Get patients that match query
             ResultSet patientResult = patientStatement.executeQuery();
 
             //Loop through patients
             while(patientResult.next()) {
+
+                logger.info("Patient found: {} {}",  patientResult.getInt("patient_id"),  patientResult.getString("surname"));
+
                 Patient patient = new Patient(
                         patientResult.getInt("patient_id"),
                         patientResult.getString("id_num"),
@@ -385,6 +425,7 @@ public class DatabaseService {
             }
 
         }catch(SQLException ex) {
+            logger.error("{}", ex.getMessage());
             ex.printStackTrace();
         }
         return people;
@@ -411,16 +452,26 @@ public class DatabaseService {
         boolean doubleVASearch = false;
         boolean va1Search = false;
         boolean va2Search = false;
+        boolean pseudophakicSearch = false;
 
         if(DateUtils.isDefault(surg_date) && lens.equals("N/A") && status.equals("N/A") && va_final1.equals("N/A") && va_final2.equals("N/A") && surg_type.equals("N/A") && surg_place.equals("N/A")) {
+            logger.info("EMPTY SEARCH.");
             return null;
         }
 
+        if(!DateUtils.isDefault(surg_date)) {
+            logger.info("PSEUDOPHAKIC SEARCH.");
+            pseudophakicSearch = true;
+        }
+
         if(!va_final1.equals("N/A") && !va_final2.equals("N/A")) {
+            logger.info("DOUBLE VA SEARCH.");
             doubleVASearch = true;
         } else if (!va_final1.equals("N/A")) {
+            logger.info("VA1 SEARCH.");
             va1Search = true;
         } else if (!va_final2.equals("N/A")) {
+            logger.info("VA2 SEARCH.");
             va2Search = true;
         }
 
@@ -456,7 +507,7 @@ public class DatabaseService {
         if(!DateUtils.isDefault(surg_date)) {
             if(month) {
                 if(doubleVASearch) {
-                    generalSQL += "(strftime('%Y-%m', Eye.surg_date / 1000, 'unixepoch') = ? OR strftime('%Y-%m', VA1.surg_date / 1000, 'unixepoch') = ?) AND";
+                    generalSQL += "(strftime('%Y-%m', Eye.surg_date / 1000, 'unixepoch') = ? OR strftime('%Y-%m', VA1.surg_date / 1000, 'unixepoch') = ?) AND ";
                 }
                 else {
                     generalSQL += "strftime('%Y-%m', Eye.surg_date / 1000, 'unixepoch') = ? AND ";
@@ -498,6 +549,7 @@ public class DatabaseService {
 
         generalSQL = generalSQL.substring(0,generalSQL.length()-5);
 
+        logger.debug("SQLLITE, {}", generalSQL);
 
         try(Connection conn = this.connect();
             PreparedStatement generalStatement = conn.prepareStatement(generalSQL)) {
@@ -540,8 +592,8 @@ public class DatabaseService {
             }
             //Set general parameters dynamically
             if(!DateUtils.isDefault(surg_date)) {
+                String strDate = surg_date.toString();
                 if(month) {
-                    String strDate = surg_date.toString();
                     generalStatement.setString(param, strDate.substring(0,7));
                     if(doubleVASearch) {
                         param++;
@@ -550,6 +602,10 @@ public class DatabaseService {
                 }
                 else {
                     generalStatement.setDate(param, surg_date);
+                    if(doubleVASearch) {
+                        param++;
+                        generalStatement.setDate(param, surg_date);
+                    }
                 }
                 param++;
             }
@@ -576,7 +632,8 @@ public class DatabaseService {
                     generalStatement.setString(param, surg_place);
                 }
             }
-            System.out.println(generalStatement.toString());
+
+            logger.info("SQL: {}", generalStatement.toString());
 
             //Execute general query
             ResultSet generalResult = generalStatement.executeQuery();
@@ -585,6 +642,15 @@ public class DatabaseService {
             //Loop through results
             while(generalResult.next()) {
                 duplicate = false;
+
+                //Check for duplicates
+                for(Integer i : uniquePatients) {
+                    if(i.equals(generalResult.getInt("patient_id"))) {
+                        duplicate = true;
+                    }
+                }
+                if(duplicate) {continue;}
+
                 //Create eye
                 Eye eye = new Eye(
                         generalResult.getInt("patient_id"),
@@ -600,17 +666,17 @@ public class DatabaseService {
                         generalResult.getString("surg_notes")
                 );
 
-                for(Integer i : uniquePatients) {
-                    if(i.equals(generalResult.getInt("patient_id"))) {
-                        duplicate = true;
-                    }
-                }
-                if(duplicate) {continue;}
+                logger.info("Eye found: {}", generalResult.getInt("patient_id"));
 
                 //Add unique patient ID to list
                 uniquePatients.add(generalResult.getInt("patient_id"));
 
                 Patient patient = getPatientByID(conn, eye.getPatient_id());
+
+                //Skip bilateral pseudophakic
+                if((!pseudophakicSearch) && patient.getStatus().equals("Bilateral pseudophakic")) {
+                    continue;
+                }
 
                 //Find Left or Right eye depending on the search
                 if(eye.getSide() == 'R') {
@@ -626,6 +692,7 @@ public class DatabaseService {
             }
         }
         catch(SQLException ex) {
+            logger.error("{}", ex.getMessage());
             ex.printStackTrace();
         }
         return people;
@@ -640,11 +707,15 @@ public class DatabaseService {
      * @throws SQLException
      */
     private Patient getPatientByID(Connection conn, int patient_id) throws SQLException {
+        logger.info("Getting Patient by patient_id.");
+
         String patSQL = "SELECT * FROM Patient WHERE patient_id = ?";
 
         PreparedStatement patStatement = conn.prepareStatement(patSQL);
 
         patStatement.setInt(1, patient_id);
+
+        logger.info("SQL: {}", patStatement.toString());
 
         ResultSet rs = patStatement.executeQuery();
 
@@ -670,12 +741,16 @@ public class DatabaseService {
      * @throws SQLException
      */
     private Eye getEyeForPatient(Connection conn, int patient_id, char side) throws SQLException {
+        logger.info("Getting Eye for Patient.");
+
         String eyeSQL = "SELECT * FROM Eye WHERE patient_id = ? AND side = ?";
 
         PreparedStatement eyeStatement = conn.prepareStatement(eyeSQL);
 
         eyeStatement.setInt(1, patient_id);
         eyeStatement.setString(2, String.valueOf(side));
+
+        logger.info("SQL: {}", eyeStatement.toString());
 
         ResultSet rs = eyeStatement.executeQuery();
 

@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -62,6 +64,7 @@ public class SearchController implements Choices
     @FXML
     private Label lblNoPatients;
 
+    private static final Logger logger = LogManager.getLogger(SearchController.class);
 
     private void addPersonToAccordion(Person person) {
         PatientPane pane = new PatientPane(person);
@@ -70,6 +73,7 @@ public class SearchController implements Choices
 
     @javafx.fxml.FXML
     public void initialize() {
+        logger.info("Initialize search controller.");
         //Setup choice boxes and choices
         chStatusFilter.setItems(FXCollections.observableArrayList(Choices.status));
         chLensFilter.setItems(FXCollections.observableArrayList(Choices.Lens));
@@ -102,6 +106,8 @@ public class SearchController implements Choices
 
     @FXML
     public void doPatientSearch(ActionEvent actionEvent) {
+        logger.info("Initiating Patient search: {} ~ {} ~ {}", txtSurname.getText(), txtInitials.getText(), txtID.getText());
+
         clearResults();
 
         ArrayList<Person> results = db.patientSearch(txtSurname.getText(), txtInitials.getText(),Date.valueOf("1000-01-01"), txtID.getText(), "N/A", "", "");
@@ -111,11 +117,14 @@ public class SearchController implements Choices
             for (Person person : results) {
                 addPersonToAccordion(person);
             }
+            logger.info("{} Patient search results.", results.size());
         }
     }
 
     @FXML
     public void doGeneralSearch(ActionEvent actionEvent) {
+        logger.info("Initiating General search: {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", DateUtils.getDate(dateSurgFilter).toString(), String.valueOf(chkMonth.isSelected()), chLensFilter.getValue(), chStatusFilter.getValue(), chVAFilter1.getValue(), chVAFilter2.getValue(), chSurgTypeFilter.getValue(), chPlaceFilter.getValue());
+
         clearResults();
 
         ArrayList<Person> results = db.generalSearch(Date.valueOf(DateUtils.getDate(dateSurgFilter)), chkMonth.isSelected(), chLensFilter.getValue(), chStatusFilter.getValue() ,chVAFilter1.getValue(), chVAFilter2.getValue(), chSurgTypeFilter.getValue(), chPlaceFilter.getValue());
@@ -125,6 +134,7 @@ public class SearchController implements Choices
                 addPersonToAccordion(person);
             }
             lblNoResults.setText(results.size() + " Results");
+            logger.info("{} General search results.", results.size());
         }
     }
 

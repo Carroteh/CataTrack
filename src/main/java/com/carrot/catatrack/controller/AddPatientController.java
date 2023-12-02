@@ -9,6 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -85,8 +87,12 @@ public class AddPatientController implements Choices
     @javafx.fxml.FXML
     private TextField txtFinalVA_OS;
 
+    private static final Logger logger = LogManager.getLogger(AddPatientController.class);
+
     @javafx.fxml.FXML
     public void initialize() {
+        logger.info("Initialize add patient controller.");
+
         //Setup Choice box options
         setupVAChoiceBoxes(chInitialVA_OD, chPostopVA_OD, ch2WeekVA_OD, ch6WeekVA_OD);
         setupVAChoiceBoxes(chInitialVA_OS, chPostopVA_OS, ch2WeekVA_OS, ch6WeekVA_OS);
@@ -137,6 +143,8 @@ public class AddPatientController implements Choices
 
     @javafx.fxml.FXML
     public void AddPatient(ActionEvent actionEvent) {
+        logger.info("Adding patient.");
+
         DatabaseService db = new DatabaseService();
 
         //Create new Patient
@@ -164,9 +172,11 @@ public class AddPatientController implements Choices
 
         if(status) {
             lblStatus.setText("Success!");
+            logger.info("Successfully added patient.");
             clearFields();
         } else {
             lblStatus.setText("Something went wrong.");
+            logger.info("Could not add patient.");
         }
     }
 

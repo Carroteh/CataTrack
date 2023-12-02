@@ -41,7 +41,7 @@ public class PatientPane extends TitledPane {
     private TextField txtFinalVA_OD;
     private DatePicker dateSurg_OD;
     private ChoiceBox<String> chSurgType_OD;
-    private TextField txtSurgPlace_OD;
+    private ChoiceBox<String> chSurgPlace_OD;
     private TextArea txtSurgNotes_OD;
 
     //LEFT EYE
@@ -53,7 +53,7 @@ public class PatientPane extends TitledPane {
     private TextField txtFinalVA_OS;
     private DatePicker dateSurg_OS;
     private ChoiceBox<String> chSurgType_OS;
-    private TextField txtSurgPlace_OS;
+    private ChoiceBox<String> chSurgPlace_OS;
     private TextArea txtSurgNotes_OS;
 
 
@@ -94,7 +94,7 @@ public class PatientPane extends TitledPane {
                     chPostopVA_OD.getValue(),
                     ch2WeeksVA_OD.getValue(),
                     ch6WeeksVA_OD.getValue(),
-                    txtSurgPlace_OD.getText(),
+                    chSurgPlace_OD.getValue(),
                     Date.valueOf(DateUtils.getDate(dateSurg_OD)),
                     chSurgType_OD.getValue(),
                     txtSurgNotes_OD.getText()
@@ -108,7 +108,7 @@ public class PatientPane extends TitledPane {
                     chPostopVA_OS.getValue(),
                     ch2WeeksVA_OS.getValue(),
                     ch6WeeksVA_OS.getValue(),
-                    txtSurgPlace_OS.getText(),
+                    chSurgPlace_OS.getValue(),
                     Date.valueOf(DateUtils.getDate(dateSurg_OS)),
                     chSurgType_OS.getValue(),
                     txtSurgNotes_OS.getText()
@@ -167,7 +167,7 @@ public class PatientPane extends TitledPane {
 
 
         chSurgType_OD.setValue(rightEye.getSurg_type());
-        txtSurgPlace_OD.setText(rightEye.getSurg_place());
+        chSurgPlace_OD.setValue(rightEye.getSurg_place());
         txtSurgNotes_OD.setText(rightEye.getSurg_notes());
 
         //OS
@@ -186,7 +186,7 @@ public class PatientPane extends TitledPane {
         }
 
         chSurgType_OS.setValue(leftEye.getSurg_type());
-        txtSurgPlace_OS.setText(leftEye.getSurg_place());
+        chSurgPlace_OS.setValue(leftEye.getSurg_place());
         txtSurgNotes_OS.setText(leftEye.getSurg_notes());
 
         String dob = patient.getId_num().length() != 6 && patient.getId_num().length() != 13  ? "" : patient.getId_num().substring(0, 6);
@@ -263,8 +263,8 @@ public class PatientPane extends TitledPane {
         dateSurg_OS = new DatePicker();
         chSurgType_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.surgeryType));
         chSurgType_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.surgeryType));
-        txtSurgPlace_OD = new TextField();
-        txtSurgPlace_OS = new TextField();
+        chSurgPlace_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.surgPlaces));
+        chSurgPlace_OS = new ChoiceBox<>(FXCollections.observableArrayList(Choices.surgPlaces));
         txtSurgNotes_OD = new TextArea();
         txtSurgNotes_OS = new TextArea();
         chLens_OD = new ChoiceBox<>(FXCollections.observableArrayList(Choices.Lens));
@@ -283,7 +283,7 @@ public class PatientPane extends TitledPane {
         ODGrid.add(new Label("Surgery"),1,1);
         ODGrid.add(new HBox(new Label("Date") , dateSurg_OD),1,2);
         ODGrid.add(new HBox(new Label("Type:") , chSurgType_OD),1,3);
-        ODGrid.add(new HBox(new Label("Place:") , txtSurgPlace_OD),1,4);
+        ODGrid.add(new HBox(new Label("Place:") , chSurgPlace_OD),1,4);
         ODGrid.add(new HBox(new Label("Notes:") , txtSurgNotes_OD),1,5, 1,2);
 
         OSGrid.add(new HBox(new Label("Lens:"),chLens_OS),0,0);
@@ -296,7 +296,7 @@ public class PatientPane extends TitledPane {
         OSGrid.add(new Label("Surgery"),1,1);
         OSGrid.add(new HBox(new Label("Date") , dateSurg_OS),1,2);
         OSGrid.add(new HBox(new Label("Type:") , chSurgType_OS),1,3);
-        OSGrid.add(new HBox(new Label("Place:") , txtSurgPlace_OS),1,4);
+        OSGrid.add(new HBox(new Label("Place:") , chSurgPlace_OS),1,4);
         OSGrid.add(new HBox(new Label("Notes:") , txtSurgNotes_OS),1,5, 1,2);
 
         ODAnchor.getChildren().add(ODGrid);
