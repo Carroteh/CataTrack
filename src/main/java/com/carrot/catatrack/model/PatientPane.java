@@ -183,7 +183,7 @@ public class PatientPane extends TitledPane {
 
         String dob = patient.getId_num().length() != 6 && patient.getId_num().length() != 13  ? "" : patient.getId_num().substring(0, 6);
         this.setText(patient.getSurname() + " " + patient.getInitials() + " ~ "
-                         + dob + " ~ " + rightEye.getVa_final() + " | " + leftEye.getVa_final() + " ~ " + patient.getContact());
+                         + dob + " ~ " + rightEye.getVa_final() + " | " + leftEye.getVa_final() + " ~ " + patient.getStatus() + " ~ " + patient.getContact());
     }
 
     /**

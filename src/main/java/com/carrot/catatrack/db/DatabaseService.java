@@ -321,6 +321,11 @@ public class DatabaseService {
      * @return an ArrayList of Persons
      */
     public ArrayList<Person> patientSearch(String surname, String initials, Date dob, String id, String status, String contact, String alt_contact) {
+
+        //Change surname and initials to lower case for easier searching
+        surname = surname.toLowerCase();
+        initials = initials.toLowerCase();
+
         ArrayList<Person> people = new ArrayList<>();
 
         String pseudophakic = "Bilateral pseudophakic";
@@ -334,10 +339,10 @@ public class DatabaseService {
             return null;
         }
         if (!surname.equals("")) {
-            patientSQL += "surname = ? AND ";
+            patientSQL += "lower(surname) = ? AND ";
         }
         if(!initials.equals("")) {
-            patientSQL += "initials = ? AND ";
+            patientSQL += "lower(initials) = ? AND ";
         }
         if(!DateUtils.isDefault(dob)) {
             patientSQL += "dob = ? AND ";
@@ -466,7 +471,7 @@ public class DatabaseService {
             return null;
         }
 
-        if(!DateUtils.isDefault(surg_date)) {
+        if(!DateUtils.isDefault(surg_date) || status.equals("Bilateral pseudophakic")) {
             logger.info("PSEUDOPHAKIC SEARCH.");
             pseudophakicSearch = true;
         }
@@ -555,8 +560,6 @@ public class DatabaseService {
         }
 
         generalSQL = generalSQL.substring(0,generalSQL.length()-5);
-
-        logger.debug("SQLLITE, {}", generalSQL);
 
         try(Connection conn = this.connect();
             PreparedStatement generalStatement = conn.prepareStatement(generalSQL)) {
