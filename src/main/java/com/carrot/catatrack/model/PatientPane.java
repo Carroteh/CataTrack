@@ -54,9 +54,11 @@ public class PatientPane extends TitledPane {
     private ChoiceBox<String> chSurgType_OS;
     private ChoiceBox<String> chSurgPlace_OS;
     private TextArea txtSurgNotes_OS;
+    private final int number;
 
 
-    public PatientPane(Person person) {
+    public PatientPane(Person person, int number) {
+        this.number = number;
         this.rightEye = person.getRightEye();
         this.leftEye = person.getLeftEye();
         this.patient = person.getPatient();
@@ -182,7 +184,7 @@ public class PatientPane extends TitledPane {
         txtSurgNotes_OS.setText(leftEye.getSurg_notes());
 
         String dob = patient.getId_num().length() != 6 && patient.getId_num().length() != 13  ? "" : patient.getId_num().substring(0, 6);
-        this.setText(patient.getSurname() + " " + patient.getInitials() + " ~ "
+        this.setText(this.number + " ~ " + patient.getSurname() + " " + patient.getInitials() + " ~ "
                          + dob + " ~ " + rightEye.getVa_final() + " | " + leftEye.getVa_final() + " ~ " + patient.getStatus() + " ~ " + patient.getContact());
     }
 

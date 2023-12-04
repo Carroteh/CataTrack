@@ -3,7 +3,6 @@ package com.carrot.catatrack.controller;
 import com.carrot.catatrack.db.DatabaseService;
 import com.carrot.catatrack.model.*;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -40,17 +39,11 @@ public class SearchController implements Choices
     @FXML
     private TextField txtID;
     @FXML
-    private Button btnPatientSearch;
-    @FXML
     private CheckBox chkMonth;
     @FXML
     private DatePicker dateSurgFilter;
     @FXML
-    private Button btnGeneralSearch;
-    @FXML
     private ChoiceBox<String> chSurgTypeFilter;
-    @FXML
-    private MenuItem itmAddPatient;
     @FXML
     private ChoiceBox<String> chVAFilter1;
     @FXML
@@ -66,8 +59,8 @@ public class SearchController implements Choices
 
     private static final Logger logger = LogManager.getLogger(SearchController.class);
 
-    private void addPersonToAccordion(Person person) {
-        PatientPane pane = new PatientPane(person);
+    private void addPersonToAccordion(Person person, int count) {
+        PatientPane pane = new PatientPane(person, count);
         patientAccordion.getPanes().add(pane);
     }
 
@@ -96,7 +89,7 @@ public class SearchController implements Choices
     }
 
     @javafx.fxml.FXML
-    public void goToAddPatient(ActionEvent actionEvent) throws IOException {
+    public void goToAddPatient() throws IOException {
         //Change view to addPatientView.fxml
         Stage stage = (Stage) root.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/views/addPatientView.fxml"));
@@ -105,7 +98,9 @@ public class SearchController implements Choices
     }
 
     @FXML
-    public void doPatientSearch(ActionEvent actionEvent) {
+    public void doPatientSearch() {
+        int count = 0;
+
         logger.info("Initiating Patient search: {} ~ {} ~ {}", txtSurname.getText(), txtInitials.getText(), txtID.getText());
 
         clearResults();
@@ -115,14 +110,17 @@ public class SearchController implements Choices
         //Add the found patients to the list
         if(results != null) {
             for (Person person : results) {
-                addPersonToAccordion(person);
+                count++;
+                addPersonToAccordion(person, count);
             }
             logger.info("{} Patient search results.", results.size());
         }
     }
 
     @FXML
-    public void doGeneralSearch(ActionEvent actionEvent) {
+    public void doGeneralSearch() {
+        int count = 0;
+
         logger.info("Initiating General search: {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", DateUtils.getDate(dateSurgFilter).toString(), String.valueOf(chkMonth.isSelected()), chLensFilter.getValue(), chStatusFilter.getValue(), chVAFilter1.getValue(), chVAFilter2.getValue(), chSurgTypeFilter.getValue(), chPlaceFilter.getValue());
 
         clearResults();
@@ -131,7 +129,8 @@ public class SearchController implements Choices
 
         if(results != null) {
             for(Person person : results) {
-                addPersonToAccordion(person);
+                count++;
+                addPersonToAccordion(person, count);
             }
             lblNoResults.setText(results.size() + " Results");
             logger.info("{} General search results.", results.size());

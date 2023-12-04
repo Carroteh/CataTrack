@@ -17,7 +17,7 @@ public class DatabaseService {
     public static final Logger logger = LogManager.getLogger(DatabaseService.class);
 
     /**
-     * No args contructor for the Database service
+     * No args constructor for the Database service
      */
     public DatabaseService() {
     }
@@ -137,7 +137,7 @@ public class DatabaseService {
     private int insertEye(Eye eye) {
         logger.info("Inserting eye");
 
-        int PK = 0;
+        int PK;
 
         //SQL statement
         String sql = """
@@ -227,7 +227,7 @@ public class DatabaseService {
 
         //Update patient table
         try(Connection conn = this.connect();
-            PreparedStatement pstmt = conn.prepareStatement(patientSQL); ) {
+            PreparedStatement pstmt = conn.prepareStatement(patientSQL) ) {
 
             pstmt.setString(1, person.getPatient().getId_num());
             pstmt.setString(2, person.getPatient().getSurname());
@@ -252,7 +252,7 @@ public class DatabaseService {
 
         //Update Right Eye
         try(Connection conn = this.connect();
-            PreparedStatement pstmt = conn.prepareStatement(rEyeSQL); ) {
+            PreparedStatement pstmt = conn.prepareStatement(rEyeSQL)) {
 
             logger.info("Updating Right eye.");
 
@@ -281,7 +281,7 @@ public class DatabaseService {
 
         //Update Left Eye
         try(Connection conn = this.connect();
-            PreparedStatement pstmt = conn.prepareStatement(lEyeSQL); ) {
+            PreparedStatement pstmt = conn.prepareStatement(lEyeSQL)) {
 
             logger.info("Updating left eye.");
 
@@ -714,7 +714,7 @@ public class DatabaseService {
      * @param conn       the database connection
      * @param patient_id the patient id
      * @return the Patient
-     * @throws SQLException
+     * @throws SQLException When the SQL query fails
      */
     private Patient getPatientByID(Connection conn, int patient_id) throws SQLException {
         logger.info("Getting Patient by patient_id.");
@@ -748,7 +748,7 @@ public class DatabaseService {
      * @param patient_id the patient ID
      * @param side       the eye side
      * @return the Eye
-     * @throws SQLException
+     * @throws SQLException When the SQL query fails
      */
     private Eye getEyeForPatient(Connection conn, int patient_id, char side) throws SQLException {
         logger.info("Getting Eye for Patient.");

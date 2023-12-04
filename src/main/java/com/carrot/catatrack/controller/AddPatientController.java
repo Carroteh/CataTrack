@@ -27,19 +27,13 @@ public class AddPatientController implements Choices
     @javafx.fxml.FXML
     private AnchorPane root;
     @javafx.fxml.FXML
-    private MenuItem itmSearch;
-    @javafx.fxml.FXML
     private TextField txtSurname;
     @javafx.fxml.FXML
     private TextField txtInitials;
     @javafx.fxml.FXML
     private TextField txtID;
     @javafx.fxml.FXML
-    private DatePicker dateBirth;
-    @javafx.fxml.FXML
     private ChoiceBox<String> chStatus;
-    @javafx.fxml.FXML
-    private Button btnAdd;
     @javafx.fxml.FXML
     private ChoiceBox<String> chInitialVA_OS;
     @javafx.fxml.FXML
@@ -131,7 +125,7 @@ public class AddPatientController implements Choices
     }
 
     @javafx.fxml.FXML
-    public void goToSearch(ActionEvent actionEvent) throws IOException {
+    public void goToSearch() throws IOException {
         //Change scene to Search view
         Stage stage = (Stage) root.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/views/searchView.fxml"));
@@ -142,7 +136,7 @@ public class AddPatientController implements Choices
     }
 
     @javafx.fxml.FXML
-    public void AddPatient(ActionEvent actionEvent) {
+    public void AddPatient() {
         logger.info("Adding patient.");
 
         DatabaseService db = new DatabaseService();
