@@ -3,11 +3,12 @@ package com.carrot.catatrack.controller;
 import com.carrot.catatrack.db.DatabaseService;
 import com.carrot.catatrack.model.*;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +25,7 @@ import java.time.LocalDate;
  */
 public class AddPatientController implements Choices
 {
+    private Stage stage;
     @javafx.fxml.FXML
     private AnchorPane root;
     @javafx.fxml.FXML
@@ -82,6 +84,14 @@ public class AddPatientController implements Choices
     private TextField txtFinalVA_OS;
 
     private static final Logger logger = LogManager.getLogger(AddPatientController.class);
+    @javafx.fxml.FXML
+    private MenuItem itmSearch;
+    @javafx.fxml.FXML
+    private Button btnAdd;
+    @javafx.fxml.FXML
+    private AnchorPane ancODGrid;
+    @javafx.fxml.FXML
+    private AnchorPane ancOSGrid;
 
     @javafx.fxml.FXML
     public void initialize() {
@@ -126,13 +136,20 @@ public class AddPatientController implements Choices
 
     @javafx.fxml.FXML
     public void goToSearch() throws IOException {
+        this.stage = (Stage) root.getScene().getWindow();
+
+        //Set stage size to screen dimensions
+        Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+        stage.setWidth(screenBounds.getWidth());
+        stage.setHeight(screenBounds.getHeight());
+
         //Change scene to Search view
-        Stage stage = (Stage) root.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/views/searchView.fxml"));
         URL stylesheet = getClass().getResource("/com/carrot/catatrack/styles/styles.css");
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add(String.valueOf(stylesheet));
-        stage.setScene(scene);
+
+        this.stage.setScene(scene);
     }
 
     @javafx.fxml.FXML

@@ -2,7 +2,9 @@ package com.carrot.catatrack;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,13 +28,19 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         logger.info("Program launch.");
+
+        //Set stage size to screen dimensions
+        Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+        stage.setWidth(screenBounds.getWidth());
+        stage.setHeight(screenBounds.getHeight());
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/views/searchView.fxml"));
         URL stylesheet = getClass().getResource("/com/carrot/catatrack/styles/styles.css");
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add(String.valueOf(stylesheet));
         stage.setTitle("CataTrack");
         stage.setScene(scene);
-        stage.setMaxWidth(1220);
+        //stage.setMaxWidth(1220);
         stage.show();
     }
 }

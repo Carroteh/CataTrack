@@ -5,9 +5,11 @@ import com.carrot.catatrack.model.*;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
  */
 public class SearchController implements Choices
 {
+    private Stage stage;
     @javafx.fxml.FXML
     private AnchorPane root;
     private DatabaseService db;
@@ -67,6 +70,7 @@ public class SearchController implements Choices
     @javafx.fxml.FXML
     public void initialize() {
         logger.info("Initialize search controller.");
+
         //Setup choice boxes and choices
         chStatusFilter.setItems(FXCollections.observableArrayList(Choices.status));
         chLensFilter.setItems(FXCollections.observableArrayList(Choices.Lens));
@@ -90,8 +94,14 @@ public class SearchController implements Choices
 
     @javafx.fxml.FXML
     public void goToAddPatient() throws IOException {
+        stage = (Stage) root.getScene().getWindow();
+
+        //Set stage size to screen dimensions
+        Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+        stage.setWidth(screenBounds.getWidth());
+        stage.setHeight(screenBounds.getHeight());
+
         //Change view to addPatientView.fxml
-        Stage stage = (Stage) root.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/carrot/catatrack/views/addPatientView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setScene(scene);
