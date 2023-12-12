@@ -175,6 +175,44 @@ public class DatabaseService {
     }
 
     /**
+     * Function that deletes a patient and their eye data from the database
+     * @param patient_id the patient id of the patient to delete
+     * @return true if successful, false if unsuccessful
+     */
+    public boolean deletePatient(int patient_id) {
+        logger.info("Deleting patient.");
+
+        String patientSQL = """
+                DELETE FROM Patient WHERE patient_id = ?
+                """;
+
+        String eyeSQL = """
+                DELETE FROM Eye WHERE patient_id = ?
+                """;
+
+        try(Connection conn = this.connect();
+            PreparedStatement patientStatement = conn.prepareStatement(patientSQL);
+            PreparedStatement eyeStatement = conn.prepareStatement(eyeSQL)) {
+
+            patientStatement.setInt(1, patient_id);
+            eyeStatement.setInt(1,  patient_id);
+
+            logger.info("SQL: {}", patientStatement.toString());
+            logger.info("SQL: {}", eyeStatement.toString());
+
+            patientStatement.executeUpdate();
+            eyeStatement.executeUpdate();
+
+            return true;
+        }
+        catch (SQLException ex) {
+            logger.error(ex.getMessage());
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * Function to update a patients information
      *
      * @param person the Person to add
@@ -465,6 +503,11 @@ public class DatabaseService {
         boolean va1Search = false;
         boolean va2Search = false;
         boolean pseudophakicSearch = false;
+        boolean equalVASeach = false;
+
+        if(va_final1.equals(va_final2)) {
+            equalVASeach = true;
+        }
 
         if(DateUtils.isDefault(surg_date) && lens.equals("N/A") && status.equals("N/A") && va_final1.equals("N/A") && va_final2.equals("N/A") && surg_type.equals("N/A") && surg_place.equals("N/A")) {
             logger.info("EMPTY SEARCH.");
@@ -692,11 +735,21 @@ public class DatabaseService {
                 if(eye.getSide() == 'R') {
                     Eye leftEye = getEyeForPatient(conn, eye.getPatient_id(), 'L');
                     Person person = new Person(patient, eye, leftEye);
+                    if(equalVASeach) {
+                        if(!(person.getLeftEye().getVa_final().equals(person.getRightEye().getVa_final()))) {
+                            continue;
+                        }
+                    }
                     people.add(person);
                 }
                 else {
                     Eye rightEye = getEyeForPatient(conn, eye.getPatient_id(), 'R');
                     Person person = new Person(patient, rightEye, eye);
+                    if(equalVASeach) {
+                        if(!(person.getLeftEye().getVa_final().equals(person.getRightEye().getVa_final()))) {
+                            continue;
+                        }
+                    }
                     people.add(person);
                 }
             }
