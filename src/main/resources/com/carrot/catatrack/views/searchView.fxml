@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="root" prefHeight="668.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carrot.catatrack.controller.SearchController">
+<AnchorPane fx:id="root" prefHeight="668.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carrot.catatrack.controller.SearchController">
    <children>
       <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -21,9 +21,9 @@
             </MenuBar>
             <SplitPane dividerPositions="0.24958263772954925">
               <items>
-                <AnchorPane maxWidth="290.0" minHeight="0.0" minWidth="10.0" prefHeight="160.0" prefWidth="290.0">
+                <AnchorPane maxWidth="200.0" minHeight="0.0" minWidth="10.0" prefHeight="641.0" prefWidth="200.0">
                      <children>
-                        <VBox layoutX="101.0" layoutY="271.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox layoutX="101.0" layoutY="271.0" prefHeight="641.0" prefWidth="296.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <Accordion>
                                 <panes>
@@ -82,39 +82,39 @@
                                                          </font>
                                                       </Label>
                                                       <CheckBox fx:id="chkMonth" mnemonicParsing="false" text="Month" />
-                                                      <DatePicker fx:id="dateSurgFilter" minWidth="270.0" prefHeight="25.0" prefWidth="270.0" />
+                                                      <DatePicker fx:id="dateSurgFilter" prefHeight="25.0" prefWidth="230.0" />
                                                       <Label text="Status:">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <ChoiceBox fx:id="chStatusFilter" prefHeight="25.0" prefWidth="268.0" style="-fx-pref-width: 268;" />
+                                                      <ChoiceBox fx:id="chStatusFilter" prefHeight="25.0" prefWidth="268.0" />
                                                       <Label text="Lens:">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <ChoiceBox fx:id="chLensFilter" minWidth="270.0" prefHeight="25.0" prefWidth="270.0" />
+                                                      <ChoiceBox fx:id="chLensFilter" prefHeight="25.0" prefWidth="270.0" />
                                                       <Label text="VA:">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <ChoiceBox fx:id="chVAFilter1" layoutX="10.0" layoutY="128.0" minWidth="270.0" prefHeight="25.0" prefWidth="270.0" />
-                                                      <ChoiceBox fx:id="chVAFilter2" minWidth="270.0" prefHeight="25.0" prefWidth="270.0" />
+                                                      <ChoiceBox fx:id="chVAFilter1" layoutX="10.0" layoutY="128.0" prefHeight="25.0" prefWidth="270.0" />
+                                                      <ChoiceBox fx:id="chVAFilter2" prefHeight="25.0" prefWidth="270.0" />
                                                       <Label text="Type:">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <ChoiceBox fx:id="chSurgTypeFilter" minWidth="270.0" prefHeight="25.0" prefWidth="266.0" />
+                                                      <ChoiceBox fx:id="chSurgTypeFilter" prefHeight="25.0" prefWidth="266.0" />
                                                       <Label text="Place:">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <ChoiceBox fx:id="chPlaceFilter" minWidth="270.0" prefHeight="25.0" prefWidth="269.0" />
-                                                      <Button fx:id="btnGeneralSearch" minWidth="270.0" mnemonicParsing="false" onAction="#doGeneralSearch" prefHeight="37.0" prefWidth="274.0" text="Search" VBox.vgrow="ALWAYS">
+                                                      <ChoiceBox fx:id="chPlaceFilter" prefHeight="25.0" prefWidth="269.0" />
+                                                      <Button fx:id="btnGeneralSearch" mnemonicParsing="false" onAction="#doGeneralSearch" prefHeight="37.0" prefWidth="274.0" text="Search" VBox.vgrow="ALWAYS">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
@@ -139,7 +139,7 @@
                         </VBox>
                      </children>
                   </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1002.0" prefWidth="896.0">
+                <AnchorPane minHeight="0.0" minWidth="10.0" prefHeight="1002.0" prefWidth="700.0">
                      <children>
                         <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <content>
