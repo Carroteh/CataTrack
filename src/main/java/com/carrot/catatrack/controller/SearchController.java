@@ -135,13 +135,22 @@ public class SearchController implements Choices
 
         clearResults();
 
+        long startTime = System.nanoTime();
         ArrayList<Person> results = db.generalSearch(Date.valueOf(DateUtils.getDate(dateSurgFilter)), chkMonth.isSelected(), chLensFilter.getValue(), chStatusFilter.getValue() ,chVAFilter1.getValue(), chVAFilter2.getValue(), chSurgTypeFilter.getValue(), chPlaceFilter.getValue());
+        long endTime = System.nanoTime();
+        long totalTime = endTime - startTime;
+
+        logger.info("The Query took: {}ms", totalTime/1000000);
 
         if(results != null) {
+            startTime = System.nanoTime();
             for(Person person : results) {
                 count++;
                 addPersonToAccordion(person, count);
             }
+            endTime = System.nanoTime();
+            totalTime = endTime - startTime;
+            logger.info("The Display took: {}ms", totalTime/1000000);
             lblNoResults.setText(results.size() + " Results");
             logger.info("{} General search results.", results.size());
         }

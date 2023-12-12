@@ -23,6 +23,7 @@ public class PatientPane extends TitledPane {
     private final Eye rightEye;
     private final Eye leftEye;
     private Button btnSave;
+    private Button btnDelete;
     private TextField txtSurname;
     private TextField txtID;
     private TextField txtInitials;
@@ -62,15 +63,45 @@ public class PatientPane extends TitledPane {
         this.rightEye = person.getRightEye();
         this.leftEye = person.getLeftEye();
         this.patient = person.getPatient();
-        setupControls();
-        setControlValues();
-        setOnAction();
+
+
+        String dob = patient.getId_num().length() != 6 && patient.getId_num().length() != 13  ? "" : patient.getId_num().substring(0, 6);
+        this.setText(this.number + " ~ " + patient.getSurname() + " " + patient.getInitials() + " ~ "
+                + dob + " ~ " + rightEye.getVa_final() + " | " + leftEye.getVa_final() + " ~ " + patient.getStatus() + " ~ " + patient.getContact() + " ~ " + patient.getAlt_contact());
+
+        this.onMouseClickedProperty().setValue(e -> {
+            setupControls();
+            setControlValues();
+            setSaveOnAction();
+            setDeleteOnAction();
+        });
+    }
+
+    /**
+     * Function that deletes a patients record and Eye data in the database when the Delete button is clicked.
+     */
+    private void setDeleteOnAction() {
+        btnDelete.setOnAction(e -> {
+            DatabaseService db = new DatabaseService();
+
+            boolean success = db.deletePatient(this.patient.getPatient_id());
+
+            if(success) {
+                lblResponse.setText("Successfully deleted.");
+                btnSave.setOnAction(ex -> {
+                    lblResponse.setText("Already deleted!");
+                });
+            }
+            else {
+                lblResponse.setText("Failed to delete.");
+            }
+        });
     }
 
     /**
      * Function that updates the Patient and Eye data in the database once the Save button is clicked
      */
-    private void setOnAction() {
+    private void setSaveOnAction() {
         btnSave.setOnAction(e -> {
             //DatabaseService instance
             DatabaseService db = new DatabaseService();
@@ -183,9 +214,7 @@ public class PatientPane extends TitledPane {
         chSurgPlace_OS.setValue(leftEye.getSurg_place());
         txtSurgNotes_OS.setText(leftEye.getSurg_notes());
 
-        String dob = patient.getId_num().length() != 6 && patient.getId_num().length() != 13  ? "" : patient.getId_num().substring(0, 6);
-        this.setText(this.number + " ~ " + patient.getSurname() + " " + patient.getInitials() + " ~ "
-                         + dob + " ~ " + rightEye.getVa_final() + " | " + leftEye.getVa_final() + " ~ " + patient.getStatus() + " ~ " + patient.getContact());
+
     }
 
     /**
@@ -222,6 +251,8 @@ public class PatientPane extends TitledPane {
         lblResponse.setId("Response");
         btnSave = new Button("Save");
         btnSave.setId("SaveButton");
+        btnDelete = new Button("Delete");
+        btnDelete.setId("DeleteButton");
 
         //Setup general info
         genGrid.add(new HBox(new Label("Surname:") , txtSurname),0,0);
@@ -232,6 +263,7 @@ public class PatientPane extends TitledPane {
         genGrid.add(new HBox(new Label("Status:") , chStatus),1,2);
         genGrid.add(new HBox(new Label(""), btnSave),2,0);
         genGrid.add(new HBox(new Label("Response:"),lblResponse), 2, 1);
+        genGrid.add(new HBox(new Label(""), btnDelete), 2,2);
 
 
         vBox.getChildren().add(genGrid);

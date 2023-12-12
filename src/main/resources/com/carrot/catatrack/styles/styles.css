@@ -41,19 +41,24 @@
 }
 
 #GridPane {
-    -fx-hgap: 100;
+    -fx-hgap: 30;
     -fx-vgap: 10;
     -fx-padding: 10,0,10,0;
 }
 
 #EyeGrid {
-    -fx-hgap: 200;
+    -fx-hgap: 100;
     -fx-vgap: 10;
     -fx-padding: 10,0,10,0;
 }
 
 #SaveButton {
     -fx-pref-width: 150;
+}
+
+#DeleteButton {
+    -fx-pref-width: 150;
+    -fx-color: rgb(255, 195, 195);
 }
 
 #SurgNotes {
