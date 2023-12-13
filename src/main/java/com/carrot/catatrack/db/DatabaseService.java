@@ -496,6 +496,8 @@ public class DatabaseService {
      */
     public ArrayList<Person> generalSearch(Date surg_date, boolean month, String lens, String status, String va_final1, String va_final2, String surg_type, String surg_place) {
 
+        long startTime = System.nanoTime();
+
         ArrayList<Person> people = new ArrayList<>();
         ArrayList<Integer> uniquePatients = new ArrayList<>();
 
@@ -691,8 +693,16 @@ public class DatabaseService {
             //Execute general query
             ResultSet generalResult = generalStatement.executeQuery();
 
+            long endTime = System.nanoTime();
+
+            long totalTime = endTime - startTime;
+
+            logger.info("Query executed in: {}ms", totalTime/1000000);
+
             boolean duplicate;
             //Loop through results
+
+            startTime = System.nanoTime();
             while(generalResult.next()) {
                 duplicate = false;
 
@@ -718,8 +728,6 @@ public class DatabaseService {
                         generalResult.getString("surg_type"),
                         generalResult.getString("surg_notes")
                 );
-
-                logger.info("Eye found: {}", generalResult.getInt("patient_id"));
 
                 //Add unique patient ID to list
                 uniquePatients.add(generalResult.getInt("patient_id"));
@@ -753,6 +761,9 @@ public class DatabaseService {
                     people.add(person);
                 }
             }
+            endTime = System.nanoTime();
+            totalTime = endTime - startTime;
+            logger.info("Results loop run in: {}ms", totalTime/1000000);
         }
         catch(SQLException ex) {
             logger.error("{}", ex.getMessage());
@@ -770,15 +781,12 @@ public class DatabaseService {
      * @throws SQLException When the SQL query fails
      */
     private Patient getPatientByID(Connection conn, int patient_id) throws SQLException {
-        logger.info("Getting Patient by patient_id.");
-
         String patSQL = "SELECT * FROM Patient WHERE patient_id = ?";
 
         PreparedStatement patStatement = conn.prepareStatement(patSQL);
 
         patStatement.setInt(1, patient_id);
 
-        logger.info("SQL: {}", patStatement.toString());
 
         ResultSet rs = patStatement.executeQuery();
 
@@ -804,7 +812,6 @@ public class DatabaseService {
      * @throws SQLException When the SQL query fails
      */
     private Eye getEyeForPatient(Connection conn, int patient_id, char side) throws SQLException {
-        logger.info("Getting Eye for Patient.");
 
         String eyeSQL = "SELECT * FROM Eye WHERE patient_id = ? AND side = ?";
 
@@ -812,8 +819,6 @@ public class DatabaseService {
 
         eyeStatement.setInt(1, patient_id);
         eyeStatement.setString(2, String.valueOf(side));
-
-        logger.info("SQL: {}", eyeStatement.toString());
 
         ResultSet rs = eyeStatement.executeQuery();
 

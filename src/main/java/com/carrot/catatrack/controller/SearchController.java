@@ -61,6 +61,19 @@ public class SearchController implements Choices
     private Label lblNoPatients;
 
     private static final Logger logger = LogManager.getLogger(SearchController.class);
+    @FXML
+    private MenuItem itmAddPatient;
+    @FXML
+    private Button btnPatientSearch;
+    @FXML
+    private Button btnGeneralSearch;
+    private int currentIndex;
+    private boolean completed;
+    ArrayList<Person> results;
+    @FXML
+    private Button btnLoadMorePatientSearch;
+    @FXML
+    private Button btnLoadMoreGeneralSearch;
 
     private void addPersonToAccordion(Person person, int count) {
         PatientPane pane = new PatientPane(person, count);
@@ -90,6 +103,8 @@ public class SearchController implements Choices
         db = new DatabaseService();
 
         lblNoPatients.setText(db.getNumPatients() + " Patients");
+        btnLoadMorePatientSearch.setVisible(false);
+        btnLoadMoreGeneralSearch.setVisible(false);
     }
 
     @javafx.fxml.FXML
@@ -109,48 +124,48 @@ public class SearchController implements Choices
 
     @FXML
     public void doPatientSearch() {
-        int count = 0;
+        completed = false;
+        btnLoadMoreGeneralSearch.setVisible(false);
+        btnLoadMorePatientSearch.setVisible(true);
+
+        currentIndex = 0;
 
         logger.info("Initiating Patient search: {} ~ {} ~ {}", txtSurname.getText(), txtInitials.getText(), txtID.getText());
 
         clearResults();
 
-        ArrayList<Person> results = db.patientSearch(txtSurname.getText(), txtInitials.getText(),Date.valueOf("1000-01-01"), txtID.getText(), "N/A", "", "");
+        results = db.patientSearch(txtSurname.getText(), txtInitials.getText(),Date.valueOf("1000-01-01"), txtID.getText(), "N/A", "", "");
 
-        //Add the found patients to the list
-        if(results != null) {
-            for (Person person : results) {
-                count++;
-                addPersonToAccordion(person, count);
-            }
-            logger.info("{} Patient search results.", results.size());
-        }
+        loadResults();
     }
 
     @FXML
     public void doGeneralSearch() {
-        int count = 0;
+        completed = false;
+        btnLoadMoreGeneralSearch.setVisible(true);
+        btnLoadMorePatientSearch.setVisible(false);
+
+        currentIndex = 0;
 
         logger.info("Initiating General search: {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {} ~ {}", DateUtils.getDate(dateSurgFilter).toString(), String.valueOf(chkMonth.isSelected()), chLensFilter.getValue(), chStatusFilter.getValue(), chVAFilter1.getValue(), chVAFilter2.getValue(), chSurgTypeFilter.getValue(), chPlaceFilter.getValue());
 
         clearResults();
 
-        long startTime = System.nanoTime();
-        ArrayList<Person> results = db.generalSearch(Date.valueOf(DateUtils.getDate(dateSurgFilter)), chkMonth.isSelected(), chLensFilter.getValue(), chStatusFilter.getValue() ,chVAFilter1.getValue(), chVAFilter2.getValue(), chSurgTypeFilter.getValue(), chPlaceFilter.getValue());
-        long endTime = System.nanoTime();
-        long totalTime = endTime - startTime;
+        results = db.generalSearch(Date.valueOf(DateUtils.getDate(dateSurgFilter)), chkMonth.isSelected(), chLensFilter.getValue(), chStatusFilter.getValue() ,chVAFilter1.getValue(), chVAFilter2.getValue(), chSurgTypeFilter.getValue(), chPlaceFilter.getValue());
 
-        logger.info("The Query took: {}ms", totalTime/1000000);
+        loadResults();
+    }
 
-        if(results != null) {
-            startTime = System.nanoTime();
-            for(Person person : results) {
-                count++;
-                addPersonToAccordion(person, count);
+    private void loadResults() {
+        if(results != null && !completed) {
+            for(int i=currentIndex; i<currentIndex+100; i++) {
+                if(i+currentIndex == results.size()) {
+                    completed = true;
+                    break;
+                }
+                addPersonToAccordion(results.get(i), currentIndex+1);
             }
-            endTime = System.nanoTime();
-            totalTime = endTime - startTime;
-            logger.info("The Display took: {}ms", totalTime/1000000);
+            currentIndex += 100;
             lblNoResults.setText(results.size() + " Results");
             logger.info("{} General search results.", results.size());
         }
@@ -158,5 +173,10 @@ public class SearchController implements Choices
 
     private void clearResults() {
         patientAccordion.getPanes().clear();
+    }
+
+    @FXML
+    public void loadMoreResults() {
+        loadResults();
     }
 }
