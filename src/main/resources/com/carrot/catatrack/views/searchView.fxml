@@ -64,6 +64,11 @@
                                                             <Insets top="20.0" />
                                                          </VBox.margin>
                                                       </Button>
+                                                      <Button fx:id="btnLoadMorePatientSearch" mnemonicParsing="false" onAction="#loadMoreResults" prefHeight="37.0" prefWidth="274.0" text="Load More">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Button>
                                                    </children>
                                                 </VBox>
                                              </children>
@@ -127,6 +132,11 @@
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
+                                                      <Button fx:id="btnLoadMoreGeneralSearch" mnemonicParsing="false" onAction="#loadMoreResults" prefHeight="37.0" prefWidth="274.0" text="Load More">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Button>
                                                    </children>
                                                 </VBox>
                                              </children>
