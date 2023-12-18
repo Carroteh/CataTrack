@@ -160,9 +160,9 @@ public class SearchController implements Choices
      * Function that loads 100 results
      */
     private void loadResults() {
-        if(results != null && !completed) {
+        if(results != null && !completed && (results.size() != 0)) {
             for(int i=currentIndex; i<currentIndex+100; i++) {
-                if(i+currentIndex == results.size()) {
+                if(i == results.size()) {
                     completed = true;
                     break;
                 }
