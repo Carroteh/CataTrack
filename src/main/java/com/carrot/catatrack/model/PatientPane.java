@@ -1,6 +1,8 @@
 package com.carrot.catatrack.model;
 
 import com.carrot.catatrack.db.DatabaseService;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -69,12 +71,17 @@ public class PatientPane extends TitledPane {
         this.setText(this.number + " ~ " + patient.getSurname() + " " + patient.getInitials() + " ~ "
                 + dob + " ~ " + rightEye.getVa_final() + " | " + leftEye.getVa_final() + " ~ " + patient.getStatus() + " ~ " + patient.getContact() + " ~ " + patient.getAlt_contact());
 
-        this.onMouseClickedProperty().setValue(e -> {
-            setupControls();
-            setControlValues();
-            setSaveOnAction();
-            setDeleteOnAction();
+        //Display content when pane is expanded
+        this.expandedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                // TitledPane is expanded
+                setupControls();
+                setControlValues();
+                setSaveOnAction();
+                setDeleteOnAction();
+            }
         });
+
     }
 
     /**

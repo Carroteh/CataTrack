@@ -146,6 +146,9 @@ public class SearchController implements Choices
         loadResults();
     }
 
+    /**
+     * Function that loads 100 results
+     */
     private void loadResults() {
         if(results != null && !completed) {
             for(int i=currentIndex; i<currentIndex+100; i++) {
@@ -153,7 +156,7 @@ public class SearchController implements Choices
                     completed = true;
                     break;
                 }
-                addPersonToAccordion(results.get(i), currentIndex+1);
+                addPersonToAccordion(results.get(i), i+1);
             }
             currentIndex += 100;
             lblNoResults.setText(results.size() + " Results");
