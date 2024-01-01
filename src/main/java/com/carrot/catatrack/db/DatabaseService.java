@@ -507,10 +507,6 @@ public class DatabaseService {
         boolean pseudophakicSearch = false;
         boolean equalVASeach = false;
 
-        if(va_final1.equals(va_final2)) {
-            equalVASeach = true;
-        }
-
         if(DateUtils.isDefault(surg_date) && lens.equals("N/A") && status.equals("N/A") && va_final1.equals("N/A") && va_final2.equals("N/A") && surg_type.equals("N/A") && surg_place.equals("N/A")) {
             logger.info("EMPTY SEARCH.");
             return null;
@@ -524,6 +520,10 @@ public class DatabaseService {
         if(!va_final1.equals("N/A") && !va_final2.equals("N/A")) {
             logger.info("DOUBLE VA SEARCH.");
             doubleVASearch = true;
+            if(va_final1.equals(va_final2)) {
+                equalVASeach = true;
+                logger.info("EQUAL VA SEARCH");
+            }
         } else if (!va_final1.equals("N/A")) {
             logger.info("VA1 SEARCH.");
             va1Search = true;
@@ -744,6 +744,7 @@ public class DatabaseService {
                     Eye leftEye = getEyeForPatient(conn, eye.getPatient_id(), 'L');
                     Person person = new Person(patient, eye, leftEye);
                     if(equalVASeach) {
+                        //skip patients that don't have the same L and R VA
                         if(!(person.getLeftEye().getVa_final().equals(person.getRightEye().getVa_final()))) {
                             continue;
                         }
@@ -754,6 +755,7 @@ public class DatabaseService {
                     Eye rightEye = getEyeForPatient(conn, eye.getPatient_id(), 'R');
                     Person person = new Person(patient, rightEye, eye);
                     if(equalVASeach) {
+                        //skip patients that don't have the same L and R VA
                         if(!(person.getLeftEye().getVa_final().equals(person.getRightEye().getVa_final()))) {
                             continue;
                         }
